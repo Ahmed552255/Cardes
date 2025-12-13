@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SORA | التنبيهات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-gold: #FFC300; 
+            --dark-gold: #DAA520;
+            --background-body: #F0F2F5; 
+            --background-card: #FFFFFF;
+            --text-dark: #1C2833;
+            --text-secondary: #95a5a6;
+            --shadow-elevation-1: 0 4px 15px rgba(0, 0, 0, 0.1); 
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--background-body);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 80px;
+        }
+
+        /* ------------------ شريط التنقل العلوي ------------------ */
+        .header {
+            background-color: var(--background-card);
+            padding: 12px 20px;
+            box-shadow: var(--shadow-elevation-1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--primary-gold);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header .mic-icon,
+        .header .user-icon {
+            font-size: 1.3rem; 
+            color: var(--text-dark); 
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .header .mic-icon:hover,
+        .header .user-icon:hover {
+            color: var(--primary-gold);
+        }
+
+        /* ------------------ محتوى التنبيهات ------------------ */
+        .alerts-container {
+            flex-grow: 1;
+            max-width: 100%;
+            margin: 0 auto;
+            width: 100%;
+            padding: 15px;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+
+        .alerts-card {
+            background: var(--background-card);
+            border-radius: 20px;
+            box-shadow: var(--shadow-elevation-1);
+            overflow: hidden;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .alerts-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--primary-gold);
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .alerts-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .alerts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center; /* تم التعديل ليصبح في المنتصف عمودياً */
+            gap: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, background 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .alert-item:hover {
+            transform: translateY(-2px);
+            background: #fff;
+        }
+        
+        .alert-item.unread {
+            border-right: 5px solid var(--primary-gold);
+            background: #fff8e1; /* خلفية فاتحة للتنبيهات غير المقروءة */
+        }
+
+        .alert-icon {
+            font-size: 1.5rem;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .alert-icon.new {
+            color: #2ecc71; /* أخضر */
+        }
+
+        .alert-icon.reminder {
+            color: #f39c12; /* برتقالي */
+        }
+
+        .alert-icon.info {
+            color: #3498db; /* أزرق */
+        }
+
+        .alert-content {
+            flex-grow: 1;
+            cursor: pointer; /* لجعل المحتوى قابلاً للنقر لفتح التفاصيل */
+        }
+
+        .alert-title {
+            font-weight: 700;
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+
+        .alert-date {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: block;
+            margin-top: 5px;
+        }
+
+        .mark-all-read, .delete-all-alerts {
+            background: var(--primary-gold);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        
+        .delete-all-alerts {
+            background: #e74c3c; /* لون أحمر للحذف */
+        }
+
+        .mark-all-read:hover, .delete-all-alerts:hover {
+            opacity: 0.8;
+        }
+        
+        /* زر الحذف الفردي */
+        .delete-alert-btn {
+            background: none;
+            border: none;
+            color: #e74c3c;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+            padding: 5px;
+            margin-right: 10px;
+            flex-shrink: 0; /* لمنع الزر من الانكماش */
+        }
+        
+        .delete-alert-btn:hover {
+            color: #c0392b;
+        }
+        
+        /* ------------------ أزرار التصفية ------------------ */
+        .alert-filters {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            background: #e0e0e0;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-dark);
+        }
+
+        .filter-btn.active {
+            background: var(--primary-gold);
+            color: white;
+            box-shadow: 0 2px 5px rgba(255, 195, 0, 0.3);
+        }
+        
+        /* ------------------ النوافذ المنبثقة (Modal) ------------------ */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .modal-header h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        
+        .alert-details p {
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        .alert-details .date-info {
+            font-size: 0.85rem;
+            color: var(--primary-gold);
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        /* ------------------ شريط التنقل السفلي ------------------ */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background-color: var(--background-card);
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            flex-basis: 20%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: color 0.3s, transform 0.2s;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .nav-item i {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+        }
+        
+        .nav-item.active {
+            color: var(--primary-gold);
+            transform: translateY(-2px);
+        }
+
+        /* ------------------ استجابة الشاشات ------------------ */
+        @media (max-width: 768px) {
+            .alerts-card {
+                padding: 15px;
+            }
+            .alert-item {
+                padding: 12px;
+            }
+            .alert-title {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="logo">SORA</div>
+    <div class="user-info">
+        <i class="fas fa-microphone mic-icon" title="الأوامر الصوتية"></i>
+        <i class="fas fa-user-circle user-icon" title="الملف الشخصي"></i>
+    </div>
+</div>
+
+<div class="alerts-container">
+    <div class="alerts-card">
+        <div class="alerts-header">
+            <span>🔔 التنبيهات</span>
+            <div class="alerts-actions">
+                <button class="mark-all-read" onclick="markAllAsRead()">قراءة الكل</button>
+                <button class="delete-all-alerts" onclick="deleteAllAlerts()">حذف الكل</button>
+            </div>
+        </div>
+        
+        <div class="alert-filters">
+            <button class="filter-btn active" onclick="filterAlerts('all')">الكل</button>
+            <button class="filter-btn" onclick="filterAlerts('unread')">غير مقروء</button>
+            <button class="filter-btn" onclick="filterAlerts('read')">مقروء</button>
+        </div>
+
+        <div class="alerts-list" id="alertsList">
+            <!-- سيتم إضافة التنبيهات هنا بواسطة JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- نافذة عرض تفاصيل التنبيه -->
+<div class="modal" id="alertDetailsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalAlertTitle"></h2>
+            <button class="close-btn" onclick="closeAlertDetailsModal()">×</button>
+        </div>
+        <div class="alert-details">
+            <p id="modalAlertNotes"></p>
+            <div class="date-info" id="modalAlertDate"></div>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-nav">
+    <a class="nav-item" id="nav-home" href="index.html">
+        <i class="fas fa-home"></i>
+        <span>الرئيسية</span>
+    </a>
+    
+    <a class="nav-item active" id="nav-alerts" href="alerts.html">
+        <i class="fas fa-bell"></i>
+        <span>التنبيهات</span>
+    </a>
+    
+    <a class="nav-item" id="nav-tasks" href="tasks.html">
+        <i class="fas fa-tasks"></i> 
+        <span>المهام</span>
+    </a>
+    
+    <a class="nav-item" id="nav-calendar" href="calendar.html">
+        <i class="fas fa-calendar-alt"></i>
+        <span>التقويم</span>
+    </a>
+    
+    <a class="nav-item" id="nav-profile" href="profile.html">
+        <i class="fas fa-user-circle"></i>
+        <span>ملفي</span>
+    </a>
+</div>
+
+<script>
+    let currentFilter = 'all';
+
+    // استخدام let بدلاً من const للسماح بتعديل المصفوفة
+
+    function renderAlerts() {
+        const alertsList = document.getElementById('alertsList');
+        alertsList.innerHTML = '';
+        
+        let filteredAlerts = alertsData;
+        if (currentFilter === 'unread') {
+            filteredAlerts = alertsData.filter(a => !a.read);
+        } else if (currentFilter === 'read') {
+            filteredAlerts = alertsData.filter(a => a.read);
+        }
+
+        if (filteredAlerts.length === 0) {
+            alertsList.innerHTML = `
+                <div style="text-align: center; color: #999; padding: 40px; background: #fff; border-radius: 10px; margin-top: 20px;">
+                    <i class="fas fa-box-open" style="font-size: 2.5rem; margin-bottom: 10px;"></i>
+                    <p>لا توجد تنبيهات ${currentFilter === 'unread' ? 'غير مقروءة' : currentFilter === 'read' ? 'مقروءة' : 'حالياً'} مطابقة.</p>
+                </div>
+            `;
+            return;
+        }
+
+        filteredAlerts.forEach(alert => {
+            const item = document.createElement('div');
+            item.className = `alert-item ${alert.read ? 'read' : 'unread'}`;
+            item.setAttribute('data-id', alert.id);
+            // item.onclick = () => openAlertDetails(alert.id); // تم نقل النقر إلى المحتوى
+
+            let iconClass = '';
+            if (alert.type === 'new') iconClass = 'fas fa-star';
+            else if (alert.type === 'reminder') iconClass = 'fas fa-clock';
+            else if (alert.type === 'info') iconClass = 'fas fa-info-circle';
+
+            item.innerHTML = `
+                <div class="alert-icon ${alert.type}">
+                    <i class="${iconClass}"></i>
+                </div>
+                <div class="alert-content" onclick="openAlertDetails(${alert.id})">
+                    <div class="alert-title">${alert.title}</div>
+                    <span class="alert-date">${alert.date}</span>
+                </div>
+                <button class="delete-alert-btn" onclick="event.stopPropagation(); deleteAlert(${alert.id})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            alertsList.appendChild(item);
+        });
+    }
+    
+    function filterAlerts(filterType) {
+        currentFilter = filterType;
+        
+        // تحديث حالة الأزرار
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`.filter-btn[onclick="filterAlerts('${filterType}')"]`).classList.add('active');
+        
+        renderAlerts();
+    }
+
+    function openAlertDetails(id) {
+        const alert = alertsData.find(a => a.id === id);
+        if (alert) {
+            // تحديث حالة التنبيه إلى مقروء
+            alert.read = true;
+            
+            // عرض التفاصيل في النافذة المنبثقة
+            document.getElementById('modalAlertTitle').textContent = alert.title;
+            document.getElementById('modalAlertNotes').textContent = alert.notes;
+            document.getElementById('modalAlertDate').textContent = `تاريخ التنبيه: ${alert.date}`;
+            
+            document.getElementById('alertDetailsModal').classList.add('active');
+            
+            // إعادة عرض القائمة لتحديث حالة "مقروء"
+            renderAlerts();
+        }
+    }
+
+    function closeAlertDetailsModal() {
+        document.getElementById('alertDetailsModal').classList.remove('active');
+    }
+
+    function markAllAsRead() {
+        alertsData.forEach(alert => {
+            alert.read = true;
+        });
+        renderAlerts();
+    }
+    
+    // ميزة حذف تنبيه فردي
+    function deleteAlert(id) {
+        if (confirm('هل أنت متأكد من حذف هذا التنبيه؟')) {
+            alertsData = alertsData.filter(alert => alert.id !== id);
+            renderAlerts();
+        }
+    }
+    
+    // ميزة حذف جميع التنبيهات
+    function deleteAllAlerts() {
+        if (confirm('هل أنت متأكد من حذف جميع التنبيهات؟ لا يمكن التراجع عن هذا الإجراء.')) {
+            alertsData = [];
+            renderAlerts();
+        }
+    }
+
+    // إغلاق النافذة عند الضغط خارجها
+    window.onclick = function(event) {
+        const modal = document.getElementById('alertDetailsModal');
+        if (event.target === modal) {
+            closeAlertDetailsModal();
+        }
+    }
+
+    // تهيئة الصفحة
+    document.addEventListener('DOMContentLoaded', renderAlerts);
+</script>
+
+</body>
+</html>
