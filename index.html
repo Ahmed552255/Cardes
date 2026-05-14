@@ -1,347 +1,178 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SORA - تسجيل الدخول/إنشاء حساب</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        :root {
-            /* نظام ألوان متقدم */
-            --primary-gold: #FFC300; 
-            --dark-gold: #DAA520;
-            --background-white: #FFFFFF;
-            --off-white: #F0F2F5; /* خلفية ناعمة ومهنية */
-            --text-dark: #1C2833; /* أسود أعمق */
-            --text-secondary: #95a5a6; 
-            --google-neutral: #34495e; 
-            --shadow-elevation-3: 0 15px 40px rgba(0, 0, 0, 0.2); 
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dash Sokoon | جاري التحميل</title>
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --primary-light: #818CF8;
+      --action: #FB923C;
+      --bg: #F8FAFC;
+      --text: #0F172A;
+      --text-secondary: #64748B;
+    }
 
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--off-white);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            text-align: center;
-            padding: 20px;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
 
-        .login-container {
-            background-color: var(--background-white);
-            padding: 40px;
-            border-radius: 25px; /* حواف أكثر دائرية وفخمة */
-            box-shadow: var(--shadow-elevation-3); /* ظل أعمق */
-            width: 100%;
-            max-width: 480px; /* توسيع العرض قليلاً */
-            border-top: 8px solid var(--primary-gold); /* شريط ذهبي أعرض */
-            transition: all 0.4s ease-in-out;
-            box-sizing: border-box;
-        }
+    body {
+      background-color: var(--bg);
+      background-image: radial-gradient(circle at 30% 40%, rgba(79,70,229,0.06) 0%, transparent 60%),
+                        radial-gradient(circle at 70% 70%, rgba(251,146,60,0.05) 0%, transparent 60%);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
 
-        .logo-text {
-            color: var(--text-dark);
-            font-size: 3.5rem; /* تكبير الشعار */
-            font-weight: 900;
-            margin-bottom: 10px;
-            letter-spacing: 3px;
-        }
-        
-        h2 {
-            color: var(--text-dark);
-            margin-top: 0;
-            margin-bottom: 30px;
-            font-size: 1.9rem;
-            font-weight: 700;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--primary-gold); /* خط فاصل ذهبي */
-        }
+    .container {
+      text-align: center;
+      padding: 2rem;
+    }
 
-        /* تنسيق الحقول */
-        .input-group {
-            margin-bottom: 25px;
-            text-align: right;
-        }
-        
-        .name-group {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px; 
-        }
-        .name-group .input-group {
-            flex: 1;
-            margin-bottom: 0;
-        }
+    .brand-title {
+      font-size: clamp(2.2rem, 9vw, 3.8rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--primary) 20%, var(--action) 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -1px;
+      white-space: nowrap;
+      display: inline-block;
+      margin-bottom: 0.3rem;
+      animation: tracking-in-expand 0.8s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
+      text-shadow: 0 2px 8px rgba(79,70,229,0.1);
+      position: relative;
+    }
 
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 700;
-            color: var(--text-dark);
-            font-size: 1rem;
-        }
+    .brand-title span {
+      color: var(--action);
+      background: linear-gradient(135deg, var(--action), #F97316);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-        .input-group input {
-            width: 100%;
-            padding: 18px; /* تكبير حقول الإدخال */
-            border: 1px solid #dcdfe3;
-            border-radius: 12px; /* حواف أكثر دائرية */
-            box-sizing: border-box;
-            font-size: 1.1rem;
-            color: var(--text-dark);
-            background-color: var(--background-white);
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards 0.6s;
+    }
 
-        .input-group input:focus {
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 0 4px rgba(255, 195, 0, 0.4); /* ظل أقوى عند التركيز */
-            outline: none;
-        }
+    .loader-container {
+      width: 280px;
+      height: 8px;
+      background: #E2E8F0;
+      border-radius: 20px;
+      margin: 0 auto;
+      overflow: hidden;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    }
 
-        /* زر الإجراء الرئيسي */
-        .btn-action {
-            width: 100%;
-            padding: 20px; /* تكبير الزر */
-            background-image: linear-gradient(to right, var(--primary-gold), var(--dark-gold));
-            color: var(--text-dark);
-            border: none;
-            border-radius: 15px;
-            font-size: 1.3rem;
-            font-weight: 900;
-            cursor: pointer;
-            box-shadow: 0 8px 30px rgba(255, 195, 0, 0.6); /* ظل أقوى وأكثر جاذبية */
-            transition: transform 0.3s, box-shadow 0.3s;
-            margin-bottom: 20px;
-        }
+    .loader-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--action));
+      border-radius: 20px;
+      box-shadow: 0 0 12px rgba(79, 70, 229, 0.3);
+      animation: progress 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
 
-        .btn-action:hover {
-            transform: translateY(-4px); /* حركة أكبر عند التمرير */
-            box-shadow: 0 10px 35px rgba(255, 195, 0, 0.7);
-        }
+    .status-text {
+      margin-top: 1.2rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+      opacity: 0;
+      animation: fadeIn 0.5s ease forwards 1s;
+    }
 
-        /* أزرار التسجيل الاجتماعي */
-        .social-login {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 30px;
-        }
+    @keyframes tracking-in-expand {
+      0% { letter-spacing: -0.5em; opacity: 0; }
+      40% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
 
-        .btn-google {
-            background-color: var(--background-white);
-            color: var(--google-neutral);
-            border: 2px solid #ecf0f1; /* خط حدود واضح */
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background-color 0.3s, border-color 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .btn-google i {
-            margin-left: 10px;
-            font-size: 1.4rem;
-            color: var(--google-neutral);
-        }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
 
-        .btn-google:hover {
-            background-color: #fcfcfc;
-            border-color: var(--primary-gold);
-        }
+    @keyframes progress {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
 
-        /* زر التبديل */
-        .switch-mode-text {
-            font-size: 1rem;
-            color: var(--text-secondary);
-        }
+    .exit-animation {
+      opacity: 0;
+      transform: scale(1.05);
+      transition: all 0.6s ease-in;
+    }
 
-        .switch-mode-text button {
-            color: var(--primary-gold);
-            font-weight: 800;
-            text-decoration: underline; /* إبراز الزر */
-        }
-
-        /* إخفاء عناصر التسجيل الإضافية */
-        .register-only {
-            display: none;
-        }
-    </style>
+    @media (max-width: 400px) {
+      .brand-title {
+        font-size: 1.8rem;
+        letter-spacing: 0;
+      }
+      .loader-container {
+        width: 220px;
+      }
+      .subtitle {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<div class="login-container">
-    <div class="logo-text">SORA</div> 
+  <div class="container" id="splash">
+    <h1 class="brand-title">DASH <span>SOKOON</span></h1>
+    <p class="subtitle">نظام إدارة الحجوزات الذكي</p>
     
-    <h2 id="form-title">تسجيل الدخول إلى SORA</h2>
-    
-    <form id="authForm">
-        <div class="name-group register-only" id="name-fields">
-            <div class="input-group">
-                <label for="first-name">الاسم الأول</label>
-                <input type="text" id="first-name" name="first-name" placeholder="الاسم الشخصي" autocomplete="given-name">
-            </div>
-            <div class="input-group">
-                <label for="last-name">الاسم الأخير</label>
-                <input type="text" id="last-name" name="last-name" placeholder="العائلة" autocomplete="family-name">
-            </div>
-        </div>
-
-        <div class="input-group">
-            <label for="email">البريد الإلكتروني</label>
-            <input type="email" id="email" name="email" placeholder="بريدك الإلكتروني" required autocomplete="email">
-        </div>
-
-        <div class="input-group">
-            <label for="password">كلمة المرور</label>
-            <input type="password" id="password" name="password" required autocomplete="current-password">
-        </div>
-
-        <div class="input-group register-only" id="confirm-password-group">
-            <label for="confirm-password">تأكيد كلمة المرور</label>
-            <input type="password" id="confirm-password" name="confirm-password" autocomplete="new-password">
-        </div>
-
-        <div class="social-login">
-            <button type="button" class="btn-google">
-                <i class="fab fa-google"></i>
-                <span id="google-text">تسجيل الدخول باستخدام جوجل</span>
-            </button>
-        </div>
-
-        <button type="submit" class="btn-action" id="main-action-button">تسجيل الدخول</button>
-    </form>
-    
-    <div class="switch-mode-text">
-        <span id="switch-text">ليس لديك حساب؟</span>
-        <button type="button" id="switch-button">إنشاء حساب جديد</button>
+    <div class="loader-container">
+      <div class="loader-fill"></div>
     </div>
-</div>
+    <p class="status-text" id="statusMessage">⚡ جاري تجهيز لوحة التحكم...</p>
+  </div>
 
-<script>
-    const formTitle = document.getElementById('form-title');
-    const nameFields = document.getElementById('name-fields');
-    const confirmPasswordGroup = document.getElementById('confirm-password-group');
-    const mainActionButton = document.getElementById('main-action-button');
-    const switchButton = document.getElementById('switch-button');
-    const switchText = document.getElementById('switch-text');
-    const googleText = document.getElementById('google-text');
-    const form = document.getElementById('authForm');
+  <script>
+    const messages = [
+      "⚡ جاري تجهيز لوحة التحكم...",
+      "📚 تحميل بيانات الكتب...",
+      "🔐 تأمين الاتصال...",
+      "✨ تجهيز الواجهة..."
+    ];
+    let msgIndex = 0;
+    const statusEl = document.getElementById('statusMessage');
     
-    let isRegisterMode = false;
-    
-    // ** الثوابت والمفاتيح **
-    const USER_AUTH_KEY = 'soraUserAuth'; // المفتاح المستخدم لحفظ حالة التوثيق في Local Storage
+    const msgInterval = setInterval(() => {
+      msgIndex = (msgIndex + 1) % messages.length;
+      statusEl.textContent = messages[msgIndex];
+    }, 800);
 
-    // 1. دالة التحقق من التوثيق والتوجيه الفوري
-    function checkAuthAndRedirect() {
-        const authData = localStorage.getItem(USER_AUTH_KEY);
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        clearInterval(msgInterval);
+        statusEl.textContent = "✅ جاهز!";
         
-        if (authData) {
-            try {
-                const user = JSON.parse(authData);
-                // التوجيه بناءً على وضع المستخدم المحفوظ
-                if (user.userMode === "Merchant") {
-                    window.location.replace("merchant-dashboard.html"); 
-                } else if (user.userMode === "Student") {
-                    window.location.replace("student-dashboard.html"); 
-                }
-            } catch (e) {
-                console.error("خطأ في تحليل بيانات التوثيق المحفوظة:", e);
-                // إذا فشل التحليل، لا تفعل شيئاً واترك المستخدم في صفحة الدخول
-            }
-        }
-    }
-
-    // يتم تشغيلها عند تحميل الصفحة
-    checkAuthAndRedirect();
-
-    // 2. دالة التبديل بين وضع التسجيل والدخول
-    function toggleMode() {
-        isRegisterMode = !isRegisterMode;
-
-        const registerFields = [nameFields, confirmPasswordGroup];
-
-        if (isRegisterMode) {
-            // وضع "إنشاء حساب"
-            formTitle.textContent = 'إنشاء حساب جديد في SORA';
-            mainActionButton.textContent = 'إنشاء الحساب الآن';
-            switchText.textContent = 'لديك حساب بالفعل؟';
-            switchButton.textContent = 'تسجيل الدخول';
-            googleText.textContent = 'إنشاء حساب باستخدام جوجل';
-
-            registerFields.forEach(field => {
-                field.classList.remove('register-only');
-                field.querySelectorAll('input').forEach(input => input.setAttribute('required', 'required'));
-            });
-            
-        } else {
-            // وضع "تسجيل الدخول"
-            formTitle.textContent = 'تسجيل الدخول إلى SORA';
-            mainActionButton.textContent = 'تسجيل الدخول';
-            switchText.textContent = 'ليس لديك حساب؟';
-            switchButton.textContent = 'إنشاء حساب جديد';
-            googleText.textContent = 'تسجيل الدخول باستخدام جوجل';
-
-            registerFields.forEach(field => {
-                field.classList.add('register-only');
-                field.querySelectorAll('input').forEach(input => input.removeAttribute('required'));
-            });
-        }
-    }
-
-    switchButton.addEventListener('click', toggleMode);
-
-    // 3. معالج إرسال النموذج (للتوثيق والحفظ)
-    form.addEventListener('submit', function(event) {
-        event.preventDefault(); 
-        const action = isRegisterMode ? "إنشاء حساب" : "تسجيل دخول";
-
-        if (isRegisterMode) {
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            
-            if (password !== confirmPassword) {
-                alert("كلمتا المرور غير متطابقتين. يرجى التحقق.");
-                return;
-            }
-        }
+        const splash = document.getElementById('splash');
+        splash.classList.add('exit-animation');
         
-        // ** هنا يتم ربط Firebase Authentication فعلياً والتحقق من كلمة المرور **
-        
-        // ** (محاكاة) بعد نجاح التوثيق من Firebase: **
-        
-        // الخطوة 1: الحصول على وضع المستخدم من بيانات Firebase
-        // في الواقع، يجب أن يتم جلب هذا من قاعدة بياناتك، لكن للمحاكاة:
-        const userModeFromFirebase = "Merchant"; 
-        const userIdFromFirebase = "user_12345";
-
-        // الخطوة 2: حفظ حالة التوثيق في التخزين المحلي
-        const userData = {
-            userId: userIdFromFirebase,
-            userMode: userModeFromFirebase,
-            authTime: new Date().getTime()
-        };
-        localStorage.setItem(USER_AUTH_KEY, JSON.stringify(userData));
-
-        alert(`تم ${action} بنجاح! يتم التوجيه...`);
-        
-        // الخطوة 3: التوجيه
-        if (userModeFromFirebase === "Merchant") {
-            window.location.replace("merchant-dashboard.html"); 
-        } else { 
-            window.location.replace("student-dashboard.html"); 
-        }
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 600);
+      }, 3000); 
     });
-</script>
+  </script>
 
 </body>
 </html>
