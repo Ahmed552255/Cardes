@@ -1,1321 +1,1342 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SORA | التقويم</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        :root {
-            --primary-gold: #FFC300; 
-            --dark-gold: #DAA520;
-            --background-body: #F0F2F5; 
-            --background-card: #FFFFFF;
-            --text-dark: #1C2833;
-            --text-secondary: #95a5a6;
-            --shadow-elevation-1: 0 4px 15px rgba(0, 0, 0, 0.1); 
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--background-body);
-            color: var(--text-dark);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding-bottom: 80px;
-        }
-
-        /* ------------------ شريط التنقل العلوي ------------------ */
-        .header {
-            background-color: var(--background-card);
-            padding: 12px 20px;
-            box-shadow: var(--shadow-elevation-1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--primary-gold);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .header .mic-icon,
-        .header .user-icon {
-            font-size: 1.3rem; 
-            color: var(--text-dark); 
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-
-        .header .mic-icon:hover,
-        .header .user-icon:hover {
-            color: var(--primary-gold);
-        }
-
-        /* ------------------ محتوى التقويم ------------------ */
-        .calendar-container {
-            flex-grow: 1;
-            max-width: 100%;
-            margin: 0 auto;
-            width: 100%;
-            padding: 15px;
-            overflow-y: auto;
-            padding-bottom: 20px;
-        }
-
-        .calendar-card {
-            background: var(--background-card);
-            border-radius: 20px;
-            box-shadow: var(--shadow-elevation-1);
-            overflow: hidden;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .calendar-header {
-            background: linear-gradient(135deg, var(--dark-gold) 0%, var(--primary-gold) 100%);
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .calendar-header h1 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .month-navigation {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .nav-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-            font-size: 1rem;
-        }
-
-        .nav-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: scale(1.1);
-        }
-
-        .current-month {
-            font-size: 1rem;
-            font-weight: 600;
-            min-width: 110px;
-            text-align: center;
-        }
-
-        .calendar-stats {
-            display: flex;
-            gap: 15px;
-            padding: 15px 20px;
-            background: linear-gradient(to bottom, #fafafa, #ffffff);
-            border-bottom: 1px solid #f0f0f0;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
-        }
-
-        .stat-badge {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .stat-badge.completed {
-            background: linear-gradient(135deg, var(--dark-gold) 0%, var(--primary-gold) 100%);
-        }
-
-	        .stat-badge.partial {
-	            background: linear-gradient(135deg, #3498db 0%, #5dade2 100%); /* اللون الأزرق لـ "جاري العمل" */
-	        }
-	        
-	        .day.half-completed {
-	            background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
-	            color: white;
-	        }
-
-        .stat-badge.incomplete {
-            background: linear-gradient(135deg, #DC143C 0%, #FF6B6B 100%);
-        }
-
-        .calendar-body {
-            padding: 15px;
-        }
-
-        .weekdays {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
-            margin-bottom: 10px;
-        }
-
-        .weekday {
-            text-align: center;
-            font-weight: 700;
-            color: var(--primary-gold);
-            padding: 8px 4px;
-            font-size: 0.8rem;
-        }
-
-        .days {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
-            margin-bottom: 15px;
-        }
-
-        .day {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.95rem;
-            font-weight: 600;
-            position: relative;
-            border: 2px solid transparent;
-            min-height: 50px;
-        }
-
-        .day:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .day.other-month {
-            color: #ccc;
-            background: #f9f9f9;
-        }
-
-        .day.today {
-            border: 2px solid var(--primary-gold);
-            font-weight: 900;
-            box-shadow: 0 0 0 3px rgba(255, 195, 0, 0.2);
-        }
-
-        .day.all-completed {
-            background: linear-gradient(135deg, var(--dark-gold) 0%, var(--primary-gold) 100%);
-            color: white;
-        }
-
-        .day.half-completed {
-            background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
-            color: white;
-        }
-
-        .day.not-completed {
-            background: linear-gradient(135deg, #DC143C 0%, #FF6B6B 100%);
-            color: white;
-        }
-
-        .day.no-tasks {
-            background: white;
-            border: 2px solid #e0e0e0;
-            color: #333;
-        }
-
-        .task-indicator {
-            position: absolute;
-            bottom: 4px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 3px;
-        }
-
-        .task-dot {
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.8);
-        }
-
-        .day.no-tasks .task-dot {
-            background: var(--primary-gold);
-        }
-
-        /* ميزة جديدة: عداد الأيام المتبقية */
-        .days-counter {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 20px;
-            margin: 15px;
-            border-radius: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .counter-item {
-            text-align: center;
-            flex: 1;
-        }
-
-        .counter-number {
-            font-size: 1.5rem;
-            font-weight: 900;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .counter-label {
-            font-size: 0.75rem;
-            opacity: 0.9;
-        }
-
-        /* ميزة البحث السريع */
-        .quick-search {
-            padding: 15px 20px;
-            background: white;
-        }
-
-        .search-box {
-            position: relative;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 12px 40px 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-family: 'Cairo', sans-serif;
-            transition: all 0.3s;
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 0 3px rgba(255, 195, 0, 0.1);
-        }
-
-        .search-box i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #999;
-        }
-
-        /* ------------------ النوافذ المنبثقة ------------------ */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            max-width: 500px;
-            width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
-            position: relative;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .modal-header h2 {
-            color: var(--primary-gold);
-            font-size: 1.3rem;
-            font-weight: 700;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: #999;
-            width: 35px;
-            height: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.3s;
-        }
-
-        .close-btn:hover {
-            background: #f0f0f0;
-            color: #333;
-        }
-
-        .tasks-list {
-            margin-bottom: 20px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .task-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .task-item:hover {
-            background: #f0f0f0;
-            transform: translateX(-5px);
-        }
-
-        .task-checkbox {
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            border: 2px solid var(--primary-gold);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .task-item.completed .task-checkbox {
-            background: var(--primary-gold);
-            color: white;
-        }
-
-        .task-content {
-            flex: 1;
-        }
-
-        .task-title {
-            font-weight: 600;
-            color: #333;
-            font-size: 0.95rem;
-        }
-
-        .task-item.completed .task-title {
-            text-decoration: line-through;
-            color: #999;
-        }
-
-        .delete-task-btn {
-            background: none;
-            border: none;
-            color: #dc3545;
-            cursor: pointer;
-            padding: 5px;
-            opacity: 0;
-            transition: all 0.3s;
-        }
-
-        .task-item:hover .delete-task-btn {
-            opacity: 1;
-        }
-
-        .add-task-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, var(--dark-gold) 0%, var(--primary-gold) 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-
-        .add-task-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(218, 165, 32, 0.4);
-        }
-
-        .add-task-btn.disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .add-task-btn.disabled:hover {
-            transform: none;
-            box-shadow: none;
-        }
-
-        .input-group {
-            margin-bottom: 18px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-
-        .input-group input,
-        .input-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-family: 'Cairo', sans-serif;
-            transition: all 0.3s;
-        }
-
-        .input-group input:focus,
-        .input-group textarea:focus {
-            outline: none;
-            border-color: var(--primary-gold);
-        }
-
-        .input-group textarea {
-            resize: vertical;
-            min-height: 90px;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--dark-gold) 0%, var(--primary-gold) 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(218, 165, 32, 0.4);
-        }
-
-        .btn-secondary {
-            background: #f0f0f0;
-            color: #333;
-        }
-
-        .btn-secondary:hover {
-            background: #e0e0e0;
-        }
-
-        .no-tasks {
-            text-align: center;
-            padding: 30px 20px;
-            color: #999;
-        }
-
-        .no-tasks i {
-            font-size: 2.5rem;
-            margin-bottom: 12px;
-            opacity: 0.3;
-        }
-
-        .task-progress {
-            margin-top: 15px;
-            padding: 12px;
-            background: #f9f9f9;
-            border-radius: 10px;
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
-            color: #666;
-        }
-
-        .progress-bar {
-            height: 8px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--dark-gold) 0%, var(--primary-gold) 100%);
-            transition: width 0.3s;
-        }
-
-        /* ------------------ شريط التنقل السفلي ------------------ */
-        .task-filters {
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 15px;
-        }
-
-        .filter-btn {
-            background: #f0f0f0;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: var(--text-dark);
-        }
-
-        .filter-btn:hover {
-            background: #e0e0e0;
-        }
-
-        .filter-btn.active {
-            background: var(--primary-gold);
-            color: white;
-            box-shadow: 0 2px 5px rgba(255, 195, 0, 0.3);
-        }
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            background-color: var(--background-card);
-            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 1000;
-        }
-
-	        .nav-item {
-	            flex-basis: 20%;
-	            display: flex;
-	            flex-direction: column;
-	            align-items: center;
-	            text-decoration: none;
-	            color: var(--text-secondary);
-	            font-size: 0.7rem;
-	            font-weight: 600;
-	            transition: color 0.3s, transform 0.2s;
-	            cursor: pointer;
-	            padding: 8px;
-	        }
-
-        .nav-item i {
-            font-size: 1.3rem;
-            margin-bottom: 4px;
-        }
-        
-        .nav-item.active {
-            color: var(--primary-gold);
-            transform: translateY(-2px);
-        }
-
-        /* ------------------ استجابة الشاشات ------------------ */
-        @media (max-width: 768px) {
-            .calendar-header h1 {
-                font-size: 1.1rem;
-            }
-
-            .current-month {
-                font-size: 0.9rem;
-                min-width: 100px;
-            }
-
-            .nav-btn {
-                width: 32px;
-                height: 32px;
-            }
-
-            .weekday {
-                font-size: 0.75rem;
-                padding: 6px 2px;
-            }
-
-            .day {
-                font-size: 0.85rem;
-                min-height: 45px;
-            }
-
-            .calendar-body {
-                padding: 10px;
-            }
-
-            .modal-content {
-                padding: 20px;
-            }
-
-            .counter-number {
-                font-size: 1.2rem;
-            }
-
-            .counter-label {
-                font-size: 0.7rem;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .day {
-                font-size: 0.75rem;
-                min-height: 40px;
-            }
-
-            .weekday {
-                font-size: 0.65rem;
-            }
-
-            .calendar-stats {
-                gap: 10px;
-                padding: 10px;
-            }
-
-            .stat-item {
-                font-size: 0.75rem;
-            }
-
-            .days {
-                gap: 4px;
-            }
-
-            .task-dot {
-                width: 4px;
-                height: 4px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dash Sokoon | إدارة حجز الكتب</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --font: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --primary: #4F46E5;
+      --primary-dark: #3730A3;
+      --action: #FB923C;
+      --action-dark: #EA580C;
+      --accent: #EC4899;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --danger: #EF4444;
+      --bg: #F8FAFC;
+      --surface: #FFFFFF;
+      --text: #0F172A;
+      --text-secondary: #64748B;
+      --border: #E2E8F0;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+      --shadow: 0 4px 15px rgba(0,0,0,0.06);
+      --shadow-lg: 0 10px 30px rgba(0,0,0,0.08);
+      --radius-sm: 0.6rem;
+      --radius: 1rem;
+      --radius-lg: 1.5rem;
+      --radius-xl: 2rem;
+      --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(79,70,229,0.03) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(251,146,60,0.03) 0px, transparent 50%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: clamp(0.5rem, 2vw, 1.5rem);
+      line-height: 1.6;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 780px;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(1rem, 2vw, 1.5rem);
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface);
+      padding: clamp(0.8rem, 2vw, 1.2rem) clamp(1rem, 3vw, 1.8rem);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    .logo-group {
+      display: flex;
+      align-items: center;
+      gap: clamp(0.5rem, 2vw, 1rem);
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: clamp(1.3rem, 3vw, 1.7rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--action));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      white-space: nowrap;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.55rem 1.3rem;
+      border-radius: var(--radius-xl);
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
+      transition: all var(--transition);
+      box-shadow: 0 2px 8px rgba(79,70,229,0.2);
+      white-space: nowrap;
+      user-select: none;
+      text-decoration: none;
+      font-family: var(--font);
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+      box-shadow: 0 6px 15px rgba(79,70,229,0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-action {
+      background: var(--action);
+      box-shadow: 0 2px 8px rgba(251,146,60,0.25);
+    }
+
+    .btn-action:hover {
+      background: var(--action-dark);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1.5px solid var(--border);
+      box-shadow: none;
+    }
+
+    .btn-outline:hover {
+      background: #F1F5F9;
+      border-color: #CBD5E1;
+      transform: none;
+    }
+
+    .btn-sm {
+      padding: 0.35rem 0.8rem;
+      font-size: 0.78rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .btn-icon {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.35rem;
+      border-radius: 0.4rem;
+      transition: var(--transition);
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    /* Search */
+    .search-card {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      padding: clamp(1rem, 3vw, 1.5rem);
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.85rem 1.2rem 0.85rem 3rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg);
+      font-size: 0.95rem;
+      color: var(--text);
+      outline: none;
+      transition: all var(--transition);
+      font-family: var(--font);
+    }
+
+    .search-box input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79,70,229,0.08);
+      background: white;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    /* Student Card */
+    .student-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      margin-top: 1rem;
+      animation: cardIn 0.35s ease;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .student-card-header {
+      background: rgba(79,70,229,0.03);
+      padding: 0.9rem 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .student-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .student-name {
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .student-phone {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .mark-all-btn {
+      background: var(--action);
+      color: white;
+      border: none;
+      padding: 0.45rem 1rem;
+      border-radius: var(--radius-xl);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all var(--transition);
+      font-family: var(--font);
+      white-space: nowrap;
+    }
+
+    .mark-all-btn:hover {
+      background: var(--action-dark);
+      transform: scale(1.03);
+    }
+
+    .mark-all-btn:active {
+      transform: scale(0.97);
+    }
+
+    .books-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .book-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.2rem;
+      border-bottom: 1px solid #F1F5F9;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      transition: background 0.15s;
+    }
+
+    .book-row:last-child {
+      border-bottom: none;
+    }
+
+    .book-row:hover {
+      background: #FAFBFC;
+    }
+
+    .book-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      min-width: 0;
+    }
+
+    .doctor-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .book-title {
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+    }
+
+    .price {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1rem;
+      white-space: nowrap;
+    }
+
+    .book-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .status-badge {
+      padding: 0.25rem 0.7rem;
+      border-radius: var(--radius-xl);
+      font-size: 0.72rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge-warning {
+      background: #FEF3C7;
+      color: #92400E;
+    }
+
+    .badge-success {
+      background: #D1FAE5;
+      color: #065F46;
+    }
+
+    .date-text {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .book-actions {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.3rem 0.5rem;
+      border-radius: 0.4rem;
+      font-size: 0.9rem;
+      transition: all var(--transition);
+      color: var(--text-secondary);
+    }
+
+    .icon-btn.deliver:hover {
+      color: var(--success);
+      background: rgba(16,185,129,0.08);
+    }
+
+    .icon-btn.delete:hover {
+      color: var(--danger);
+      background: rgba(239,68,68,0.08);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-secondary);
+    }
+
+    .empty-state i {
+      font-size: 2.5rem;
+      opacity: 0.3;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.55);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 0.8rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s, visibility 0.25s;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+      border: 1px solid var(--border);
+      padding: clamp(1rem, 3vw, 1.6rem);
+      transform: translateY(20px);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .modal-overlay.active .modal {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.2rem;
+    }
+
+    .modal-header h3 {
+      font-size: 1.2rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.6rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      padding: 0.2rem;
+      line-height: 1;
+      transition: var(--transition);
+      border-radius: 50%;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close-btn:hover {
+      background: #F1F5F9;
+      color: var(--text);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 0.7rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .form-row input {
+      flex: 1 1 180px;
+      padding: 0.7rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg);
+      font-size: 0.9rem;
+      color: var(--text);
+      outline: none;
+      transition: all var(--transition);
+      font-family: var(--font);
+    }
+
+    .form-row input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79,70,229,0.08);
+      background: white;
+    }
+
+    .stepper {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.2rem;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1rem;
+    }
+
+    .step-indicators {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      justify-content: center;
+    }
+
+    .step-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .step-dot.active {
+      background: var(--primary);
+      transform: scale(1.4);
+      box-shadow: 0 0 8px rgba(79,70,229,0.3);
+    }
+
+    .step-dot.done {
+      background: var(--success);
+    }
+
+    .step-content {
+      display: none;
+      animation: fadeUp 0.3s ease;
+    }
+
+    .step-content.active {
+      display: block;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-content label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.4rem;
+    }
+
+    .step-content select {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg);
+      font-size: 0.9rem;
+      color: var(--text);
+      outline: none;
+      font-family: var(--font);
+      transition: all var(--transition);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: left 0.8rem center;
+      padding-left: 2.5rem;
+    }
+
+    .step-content select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79,70,229,0.08);
+      background-color: white;
+    }
+
+    .added-books-section {
+      background: rgba(79,70,229,0.02);
+      border: 1.5px dashed var(--primary);
+      border-radius: var(--radius);
+      padding: 0.8rem 1rem;
+      margin-top: 0.8rem;
+      display: none;
+    }
+
+    .added-books-section h4 {
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .mini-book-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.35rem 0;
+      font-size: 0.82rem;
+      border-bottom: 1px solid #F1F5F9;
+    }
+
+    .mini-book-item:last-child {
+      border-bottom: none;
+    }
+
+    .remove-mini {
+      color: var(--accent);
+      cursor: pointer;
+      font-weight: bold;
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.3rem;
+      transition: var(--transition);
+    }
+
+    .remove-mini:hover {
+      background: rgba(236,72,153,0.1);
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 800;
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.95rem;
+      color: var(--primary);
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 0.7rem;
+      justify-content: flex-end;
+      margin-top: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(120px);
+      background: #1E293B;
+      color: white;
+      padding: 0.7rem 1.5rem;
+      border-radius: var(--radius-xl);
+      font-weight: 600;
+      font-size: 0.85rem;
+      z-index: 2000;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.success {
+      background: var(--success);
+    }
+
+    .toast.warning {
+      background: var(--warning);
+      color: #1E293B;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Mobile */
+    @media (max-width: 500px) {
+      .header {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      .book-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .book-meta {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .book-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+
+      .modal {
+        margin: 0.3rem;
+        border-radius: var(--radius-lg);
+      }
+
+      .form-row input {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
 </head>
 <body>
-
-<div class="header">
-    <div class="logo">SORA</div>
-    <div class="user-info">
-        <i class="fas fa-microphone mic-icon" title="الأوامر الصوتية"></i>
-        <i class="fas fa-user-circle user-icon" title="الملف الشخصي"></i>
-    </div>
-</div>
-
-<div class="calendar-container">
-    <div class="calendar-card">
-        <div class="calendar-header">
-            <h1>📅 التقويم الخاص بي</h1>
-            <div class="month-navigation">
-                <button class="nav-btn" onclick="changeMonth(-1)">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-                <div class="current-month" id="currentMonth"></div>
-                <button class="nav-btn" onclick="changeMonth(1)">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-            </div>
-        </div>
-
-        <div class="calendar-stats">
-            <div class="stat-item">
-                <div class="stat-badge completed"></div>
-                <span>مكتمل</span>
-            </div>
-            <div class="stat-item">
-                <div class="stat-badge partial"></div>
-                <span>جاري العمل</span>
-            </div>
-            <div class="stat-item">
-                <div class="stat-badge incomplete"></div>
-                <span>غير مكتمل</span>
-            </div>
-        </div>
-
-        <!-- ميزة جديدة: البحث السريع -->
-        <div class="quick-search">
-            <div class="search-box">
-                <input type="text" id="searchTasks" placeholder="ابحث عن مهمة..." oninput="searchTasks()">
-                <i class="fas fa-search"></i>
-            </div>
-        </div>
-
-        <div class="calendar-body">
-            <div class="weekdays">
-                <div class="weekday">الأحد</div>
-                <div class="weekday">الاثنين</div>
-                <div class="weekday">الثلاثاء</div>
-                <div class="weekday">الأربعاء</div>
-                <div class="weekday">الخميس</div>
-                <div class="weekday">الجمعة</div>
-                <div class="weekday">السبت</div>
-            </div>
-            <div class="days" id="calendarDays"></div>
-        </div>
-
-        <!-- ميزة جديدة: عداد الإحصائيات -->
-        <div class="days-counter">
-            <div class="counter-item">
-                <span class="counter-number" id="totalTasks">0</span>
-                <span class="counter-label">إجمالي المهام</span>
-            </div>
-            <div class="counter-item">
-                <span class="counter-number" id="completedTasks">0</span>
-                <span class="counter-label">مهام منجزة</span>
-            </div>
-            <div class="counter-item">
-                <span class="counter-number" id="pendingTasks">0</span>
-                <span class="counter-label">مهام قادمة</span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- نافذة عرض المهام -->
-<div class="modal" id="taskModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 id="modalDate"></h2>
-            <button class="close-btn" onclick="closeModal()">×</button>
-        </div>
-        
-        <div class="task-filters" id="taskFilters" style="display:none;">
-            <button class="filter-btn active" onclick="filterTasks('all')">الكل</button>
-            <button class="filter-btn" onclick="filterTasks('completed')">مكتملة</button>
-            <button class="filter-btn" onclick="filterTasks('incomplete')">غير مكتملة</button>
-        </div>
-        <div id="taskProgress" class="task-progress" style="display:none;">
-            <div class="progress-header">
-                <span>التقدم</span>
-                <span id="progressText">0%</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-        </div>
-
-        <div class="tasks-list" id="tasksList"></div>
-        <button class="add-task-btn" id="addTaskBtn" onclick="openAddTaskModal()">
-            <i class="fas fa-plus"></i>
-            إضافة مهمة جديدة
+  <div class="app">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo-group">
+        <span class="logo">Dash Sokoon</span>
+        <button class="btn btn-action" onclick="openReservationModal()">
+          <i class="fas fa-plus"></i> حجز جديد
         </button>
+      </div>
     </div>
-</div>
 
-<!-- نافذة إضافة مهمة -->
-<div class="modal" id="addTaskModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>إضافة مهمة جديدة</h2>
-            <button class="close-btn" onclick="closeAddTaskModal()">×</button>
+    <!-- Search -->
+    <div class="search-card">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="ابحث برقم الهاتف..." oninput="renderReservations()" autocomplete="off">
+      </div>
+      <div id="resultsContainer">
+        <div class="empty-state">
+          <i class="fas fa-inbox"></i>
+          <p>جاري تحميل الحجوزات...</p>
         </div>
-        <div class="input-group">
-            <label>عنوان المهمة</label>
-            <input type="text" id="taskTitle" placeholder="أدخل عنوان المهمة...">
-        </div>
-        <div class="input-group">
-            <label>الوصف (اختياري)</label>
-            <textarea id="taskDescription" placeholder="أدخل وصف المهمة..."></textarea>
-        </div>
-        <div class="form-actions">
-            <button class="btn btn-secondary" onclick="closeAddTaskModal()">إلغاء</button>
-            <button class="btn btn-primary" onclick="addTask()">إضافة</button>
-        </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<div class="bottom-nav">
-    <a class="nav-item" id="nav-home" href="index.html">
-        <i class="fas fa-home"></i>
-        <span>الرئيسية</span>
-    </a>
-    
-    <a class="nav-item" id="nav-alerts" href="alerts.html">
-        <i class="fas fa-bell"></i>
-        <span>التنبيهات</span>
-    </a>
-    
-    <a class="nav-item" id="nav-tasks" href="tasks.html">
-        <i class="fas fa-tasks"></i> 
-        <span>المهام</span>
-    </a>
-    
-	    <a class="nav-item active" id="nav-calendar" href="calendar.html">
-	        <i class="fas fa-calendar-alt"></i>
-	        <span>التقويم</span>
-	    </a>
-	    
-	    <a class="nav-item" id="nav-profile" href="profile.html">
-	        <i class="fas fa-user-circle"></i>
-	        <span>ملفي</span>
-	    </a>
-    
+  <!-- Reservation Modal -->
+  <div class="modal-overlay" id="reservationModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-book-medical"></i> حجز كتب جديدة</h3>
+        <button class="close-btn" onclick="closeReservationModal()">&times;</button>
+      </div>
 
-</div>
+      <div class="form-row">
+        <input type="text" id="studentName" placeholder="👤 اسم الطالب رباعي">
+        <input type="tel" id="studentPhone" placeholder="📱 رقم الهاتف">
+      </div>
 
-<script>
-    let currentDate = new Date();
-    let selectedDate = null;
-    
-    // بيانات المهام التجريبية
-    const tasks = {
-        '2024-12-13': [
-            { id: 1, title: 'مراجعة الكود', completed: true },
-            { id: 2, title: 'اجتماع الفريق', completed: true },
-            { id: 3, title: 'كتابة التقرير', completed: true }
-        ],
-        '2024-12-14': [
-            { id: 4, title: 'تطوير الميزة الجديدة', completed: true },
-            { id: 5, title: 'اختبار التطبيق', completed: false }
-        ],
-        '2024-12-15': [
-            { id: 6, title: 'مكالمة مع العميل', completed: false },
-            { id: 7, title: 'تحديث الوثائق', completed: false },
-            { id: 8, title: 'مراجعة الأداء', completed: false }
-        ],
-        '2024-12-16': [
-            { id: 10, title: 'اجتماع التخطيط', completed: false },
-            { id: 11, title: 'مراجعة الميزانية', completed: false }
-        ],
-        '2024-12-17': [
-            { id: 12, title: 'عرض تقديمي', completed: false }
-        ],
-        '2024-12-10': [
-            { id: 9, title: 'مهمة قديمة', completed: false }
-        ]
+      <div class="stepper">
+        <div class="step-indicators">
+          <span class="step-dot active" data-step="0"></span>
+          <span class="step-dot" data-step="1"></span>
+          <span class="step-dot" data-step="2"></span>
+          <span class="step-dot" data-step="3"></span>
+        </div>
+
+        <div class="step-content active" id="step0">
+          <label>🏛️ اختر الكلية</label>
+          <select id="collegeSelect" onchange="onCollegeChange()">
+            <option value="">-- اختر الكلية --</option>
+          </select>
+        </div>
+        <div class="step-content" id="step1">
+          <label>📚 القسم</label>
+          <select id="deptSelect" onchange="onDeptChange()">
+            <option value="">-- اختر القسم --</option>
+          </select>
+        </div>
+        <div class="step-content" id="step2">
+          <label>🎓 الفرقة الدراسية</label>
+          <select id="gradeSelect" onchange="onGradeChange()">
+            <option value="">-- اختر الفرقة --</option>
+            <option value="الأولى">الأولى</option>
+            <option value="الثانية">الثانية</option>
+            <option value="الثالثة">الثالثة</option>
+            <option value="الرابعة">الرابعة</option>
+          </select>
+        </div>
+        <div class="step-content" id="step3">
+          <label>👨‍🏫 الدكتور / المادة</label>
+          <select id="doctorSelect" onchange="onDoctorChange()">
+            <option value="">-- اختر الكتاب --</option>
+          </select>
+          <button class="btn btn-action" id="addBookBtn" onclick="addBookToCart()" disabled style="width:100%;margin-top:0.6rem;justify-content:center;">
+            ➕ أضف الكتاب
+          </button>
+        </div>
+      </div>
+
+      <div class="added-books-section" id="addedSection">
+        <h4>📋 الكتب المختارة:</h4>
+        <div id="miniBooksList"></div>
+        <div class="total-row">
+          <span>الإجمالي:</span>
+          <span id="totalPriceDisplay">0 ج</span>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="addAnotherBook()" style="margin-top:0.5rem;width:100%;justify-content:center;">
+          ➕ أضف كتاب آخر
+        </button>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeReservationModal()">إلغاء</button>
+        <button class="btn btn-action" id="finalizeBtn" onclick="finalizeReservation()" disabled>
+          ✅ تأكيد الحجز
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, set, push, update, remove, onValue, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    // ===== Firebase Config =====
+    const firebaseConfig = {
+      apiKey: "AIzaSyB1iGYl3_VuVAOyVexQsg3rKTDt0OZMRSk",
+      authDomain: "dagd-9b228.firebaseapp.com",
+      databaseURL: "https://dagd-9b228-default-rtdb.firebaseio.com",
+      projectId: "dagd-9b228",
+      storageBucket: "dagd-9b228.firebasestorage.app",
+      messagingSenderId: "299664084614",
+      appId: "1:299664084614:web:39df93bcbde273c4d84307",
+      measurementId: "G-52C4B7Q2YQ"
     };
 
-    const monthNames = [
-        'يناير', 'فبراير', 'مارس', 'إبريل', 'مايو', 'يونيو',
-        'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
-    ];
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-    function formatDate(date) {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
+    // ===== Database References =====
+    const reservationsRef = ref(db, 'reservations');
+    const doctorsRef = ref(db, 'doctors');
+    const configRef = ref(db, 'config/colleges');
+
+    // ===== State =====
+    let allReservations = [];
+    let doctorsList = [];
+    let collegesData = [];
+    let currentStudent = { name: '', phone: '', college: '', dept: '', grade: '' };
+    let cartBooks = [];
+    let studentLocked = false;
+    let currentStep = 0;
+
+    // ===== DOM Elements =====
+    const searchInput = document.getElementById('searchInput');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const toast = document.getElementById('toast');
+    let toastTimer;
+
+    // ===== Toast =====
+    function showToast(msg, type = 'success') {
+      clearTimeout(toastTimer);
+      toast.textContent = msg;
+      toast.className = 'toast ' + type;
+      toast.classList.add('show');
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
-    function getDayStatus(dateStr) {
-        const dayTasks = tasks[dateStr];
-        if (!dayTasks || dayTasks.length === 0) return 'no-tasks';
-        
-        const completedTasks = dayTasks.filter(t => t.completed).length;
-        const totalTasks = dayTasks.length;
-        
-        if (completedTasks === totalTasks) return 'all-completed';
-        if (completedTasks > 0) return 'half-completed';
-        return 'not-completed';
+    // ===== Load Data =====
+    function loadReservations() {
+      onValue(reservationsRef, (snapshot) => {
+        allReservations = [];
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          allReservations = Object.keys(data).map(key => ({
+            id: key,
+            ...data[key]
+          }));
+        }
+        renderReservations();
+      }, (error) => {
+        showToast('فشل تحميل الحجوزات', 'warning');
+        resultsContainer.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>خطأ في التحميل</p></div>';
+      });
     }
 
-    function updateStatistics() {
-        let total = 0;
-        let completed = 0;
-        let pending = 0;
+    function loadDoctors() {
+      onValue(doctorsRef, (snapshot) => {
+        doctorsList = [];
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          doctorsList = Object.keys(data).map(key => ({
+            id: key,
+            ...data[key]
+          }));
+        }
+      });
+    }
 
-        Object.values(tasks).forEach(dayTasks => {
-            total += dayTasks.length;
-            completed += dayTasks.filter(t => t.completed).length;
+    function loadColleges() {
+      onValue(configRef, (snapshot) => {
+        if (snapshot.exists()) {
+          collegesData = snapshot.val();
+        } else {
+          // بيانات افتراضية
+          collegesData = [
+            { name: "الهندسة", depts: ["مدني", "كهرباء", "ميكانيكا"] },
+            { name: "التجارة", depts: ["محاسبة", "إدارة أعمال", "اقتصاد"] },
+            { name: "حاسبات ومعلومات", depts: ["علوم حاسب", "نظم معلومات"] }
+          ];
+        }
+        populateCollegeSelect();
+      });
+    }
+
+    // ===== Populate Selects =====
+    function populateCollegeSelect() {
+      const select = document.getElementById('collegeSelect');
+      if (!select) return;
+      select.innerHTML = '<option value="">-- اختر الكلية --</option>';
+      collegesData.forEach(c => {
+        select.innerHTML += `<option value="${c.name}">${c.name}</option>`;
+      });
+    }
+
+    function updateDeptSelect(collegeName) {
+      const select = document.getElementById('deptSelect');
+      select.innerHTML = '<option value="">-- اختر القسم --</option>';
+      const college = collegesData.find(c => c.name === collegeName);
+      if (college && college.depts) {
+        college.depts.forEach(d => {
+          select.innerHTML += `<option value="${d}">${d}</option>`;
         });
-
-        pending = total - completed;
-
-        document.getElementById('totalTasks').textContent = total;
-        document.getElementById('completedTasks').textContent = completed;
-        document.getElementById('pendingTasks').textContent = pending;
+      }
     }
 
-    function renderCalendar() {
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth();
-        
-        document.getElementById('currentMonth').textContent = 
-            `${monthNames[month]} ${year}`;
-        
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
-        const prevLastDay = new Date(year, month, 0);
-        
-        const firstDayIndex = firstDay.getDay();
-        const lastDayDate = lastDay.getDate();
-        const prevLastDayDate = prevLastDay.getDate();
-        
-        const daysContainer = document.getElementById('calendarDays');
-        daysContainer.innerHTML = '';
-        
-        const today = new Date();
-        const todayStr = formatDate(today);
-        
-        // أيام الشهر السابق
-        for (let i = firstDayIndex - 1; i >= 0; i--) {
-            const dayDiv = document.createElement('div');
-            dayDiv.className = 'day other-month';
-            dayDiv.textContent = prevLastDayDate - i;
-            daysContainer.appendChild(dayDiv);
-        }
-        
-        // أيام الشهر الحالي
-        for (let day = 1; day <= lastDayDate; day++) {
-            const dayDiv = document.createElement('div');
-            const dateStr = formatDate(new Date(year, month, day));
-            const status = getDayStatus(dateStr);
-            
-            dayDiv.className = `day ${status}`;
-            if (dateStr === todayStr) {
-                dayDiv.classList.add('today');
-            }
-            
-            dayDiv.textContent = day;
-            
-            if (tasks[dateStr] && tasks[dateStr].length > 0) {
-                const indicator = document.createElement('div');
-                indicator.className = 'task-indicator';
-                const dotCount = Math.min(tasks[dateStr].length, 3);
-                for (let i = 0; i < dotCount; i++) {
-                    const dot = document.createElement('div');
-                    dot.className = 'task-dot';
-                    indicator.appendChild(dot);
-                }
-                dayDiv.appendChild(indicator);
-            }
-            
-            dayDiv.onclick = () => openDayModal(dateStr);
-            daysContainer.appendChild(dayDiv);
-        }
-        
-        // أيام الشهر التالي
-        const remainingDays = 42 - (firstDayIndex + lastDayDate);
-        for (let day = 1; day <= remainingDays; day++) {
-            const dayDiv = document.createElement('div');
-            dayDiv.className = 'day other-month';
-            dayDiv.textContent = day;
-            daysContainer.appendChild(dayDiv);
-        }
-
-        updateStatistics();
+    function updateDoctorSelect(college, dept) {
+      const select = document.getElementById('doctorSelect');
+      select.innerHTML = '<option value="">-- اختر الكتاب --</option>';
+      if (college && dept) {
+        doctorsList
+          .filter(d => d.college === college && d.dept === dept)
+          .forEach(d => {
+            select.innerHTML += `<option value="${d.id}">${d.name} - ${d.book} (${d.price} ج)</option>`;
+          });
+      }
     }
 
-    function changeMonth(direction) {
-        currentDate.setMonth(currentDate.getMonth() + direction);
-        renderCalendar();
+    // ===== Step Navigation =====
+    function goToStep(step) {
+      if (step > currentStep) {
+        if (currentStep === 0 && !document.getElementById('collegeSelect').value) {
+          showToast('اختر الكلية أولاً', 'warning'); return;
+        }
+        if (currentStep === 1 && !document.getElementById('deptSelect').value) {
+          showToast('اختر القسم', 'warning'); return;
+        }
+        if (currentStep === 2 && !document.getElementById('gradeSelect').value) {
+          showToast('اختر الفرقة', 'warning'); return;
+        }
+      }
+      if (step < currentStep && studentLocked) {
+        showToast('بيانات الطالب مثبتة', 'warning'); return;
+      }
+      setStep(step);
     }
 
-    function updateProgress(dateStr) {
-        const dayTasks = tasks[dateStr] || [];
-        if (dayTasks.length === 0) {
-            document.getElementById('taskProgress').style.display = 'none';
-            return;
+    function setStep(step) {
+      document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.step-dot').forEach(d => d.classList.remove('active'));
+      document.getElementById(`step${step}`).classList.add('active');
+      const dots = document.querySelectorAll('.step-dot');
+      dots.forEach((d, i) => {
+        if (i === step) d.classList.add('active');
+      });
+      currentStep = step;
+    }
+
+    function onCollegeChange() {
+      const val = document.getElementById('collegeSelect').value;
+      if (val) {
+        updateDeptSelect(val);
+        document.getElementById('deptSelect').value = '';
+        document.getElementById('gradeSelect').value = '';
+        document.getElementById('doctorSelect').innerHTML = '<option value="">-- اختر الكتاب --</option>';
+        document.getElementById('addBookBtn').disabled = true;
+        goToStep(1);
+      }
+    }
+
+    function onDeptChange() {
+      const val = document.getElementById('deptSelect').value;
+      if (val) {
+        document.getElementById('gradeSelect').value = '';
+        document.getElementById('doctorSelect').innerHTML = '<option value="">-- اختر الكتاب --</option>';
+        document.getElementById('addBookBtn').disabled = true;
+        goToStep(2);
+      }
+    }
+
+    function onGradeChange() {
+      const val = document.getElementById('gradeSelect').value;
+      if (val) {
+        const college = document.getElementById('collegeSelect').value;
+        const dept = document.getElementById('deptSelect').value;
+        updateDoctorSelect(college, dept);
+        goToStep(3);
+      }
+    }
+
+    function onDoctorChange() {
+      document.getElementById('addBookBtn').disabled = !document.getElementById('doctorSelect').value;
+    }
+
+    // ===== Cart =====
+    function addBookToCart() {
+      const name = document.getElementById('studentName').value.trim();
+      const phone = document.getElementById('studentPhone').value.trim();
+      const doctorId = document.getElementById('doctorSelect').value;
+
+      if (!name || !phone) {
+        showToast('أدخل اسم الطالب ورقم الهاتف', 'warning'); return;
+      }
+
+      if (!studentLocked) {
+        const college = document.getElementById('collegeSelect').value;
+        const dept = document.getElementById('deptSelect').value;
+        const grade = document.getElementById('gradeSelect').value;
+        if (!college || !dept || !grade) {
+          showToast('أكمل جميع خطوات الاختيار', 'warning'); return;
+        }
+        currentStudent = { name, phone, college, dept, grade };
+        studentLocked = true;
+        document.getElementById('studentName').disabled = true;
+        document.getElementById('studentPhone').disabled = true;
+        document.getElementById('collegeSelect').disabled = true;
+        document.getElementById('deptSelect').disabled = true;
+        document.getElementById('gradeSelect').disabled = true;
+      }
+
+      const doctor = doctorsList.find(d => d.id === doctorId);
+      if (!doctor) return;
+
+      cartBooks.push({
+        doctorId: doctor.id,
+        doctorName: doctor.name,
+        book: doctor.book,
+        price: doctor.price
+      });
+
+      updateCartUI();
+      document.getElementById('doctorSelect').value = '';
+      document.getElementById('addBookBtn').disabled = true;
+      document.getElementById('addedSection').style.display = 'block';
+    }
+
+    function addAnotherBook() {
+      document.getElementById('doctorSelect').value = '';
+      document.getElementById('addBookBtn').disabled = true;
+      document.getElementById('doctorSelect').focus();
+    }
+
+    function removeFromCart(index) {
+      cartBooks.splice(index, 1);
+      if (cartBooks.length === 0) {
+        studentLocked = false;
+        document.getElementById('studentName').disabled = false;
+        document.getElementById('studentPhone').disabled = false;
+        document.getElementById('collegeSelect').disabled = false;
+        document.getElementById('deptSelect').disabled = false;
+        document.getElementById('gradeSelect').disabled = false;
+        document.getElementById('addedSection').style.display = 'none';
+      }
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const list = document.getElementById('miniBooksList');
+      let total = 0;
+      list.innerHTML = '';
+      cartBooks.forEach((b, i) => {
+        total += b.price;
+        list.innerHTML += `
+          <div class="mini-book-item">
+            <span>📘 ${b.book} - ${b.doctorName} (${b.price} ج)</span>
+            <span class="remove-mini" onclick="window.removeFromCart(${i})">✕</span>
+          </div>
+        `;
+      });
+      document.getElementById('totalPriceDisplay').textContent = total + ' ج';
+      document.getElementById('finalizeBtn').disabled = cartBooks.length === 0;
+    }
+
+    // ===== Finalize =====
+    async function finalizeReservation() {
+      if (cartBooks.length === 0) return;
+
+      const btn = document.getElementById('finalizeBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> جاري الحفظ...';
+
+      const dateStr = new Date().toLocaleDateString('ar-EG');
+      const timestamp = Date.now();
+
+      try {
+        for (const book of cartBooks) {
+          const reservationData = {
+            studentName: currentStudent.name,
+            phone: currentStudent.phone,
+            college: currentStudent.college,
+            department: currentStudent.dept,
+            grade: currentStudent.grade,
+            doctor: book.doctorName,
+            doctorId: book.doctorId,
+            book: book.book,
+            price: book.price,
+            received: false,
+            timestamp: timestamp,
+            date: dateStr
+          };
+          await push(reservationsRef, reservationData);
         }
 
-        const completedTasks = dayTasks.filter(t => t.completed).length;
-        const percentage = Math.round((completedTasks / dayTasks.length) * 100);
-
-        document.getElementById('taskProgress').style.display = 'block';
-        document.getElementById('progressText').textContent = `${percentage}%`;
-        document.getElementById('progressFill').style.width = `${percentage}%`;
+        showToast(`✅ تم حجز ${cartBooks.length} كتب لـ ${currentStudent.name}`);
+        closeReservationModal();
+      } catch (error) {
+        showToast('فشل حفظ الحجز', 'warning');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '✅ تأكيد الحجز';
+      }
     }
 
-    function openDayModal(dateStr) {
-        selectedDate = dateStr;
-        const date = new Date(dateStr);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        const modalDateEl = document.getElementById('modalDate');
-        modalDateEl.textContent = `${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
-        
-        const dayTasks = tasks[dateStr] || [];
-        const tasksListEl = document.getElementById('tasksList');
-        
-	        updateProgress(dateStr);
-	        
-	        // إظهار أزرار التصفية
-	        const taskFiltersEl = document.getElementById('taskFilters');
-	        taskFiltersEl.style.display = dayTasks.length > 0 ? 'flex' : 'none';
-	        
-	        // إعادة تعيين التصفية إلى "الكل" عند فتح النافذة
-	        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-	        document.querySelector('.filter-btn[onclick="filterTasks(\'all\')"]').classList.add('active');
-	        
-	        if (dayTasks.length === 0) {
-            tasksListEl.innerHTML = `
-                <div class="no-tasks">
-                    <i class="fas fa-info-circle"></i>
-                    <p>لا توجد مهام في هذا اليوم</p>
+    // ===== Actions =====
+    async function markReceived(reservationId) {
+      try {
+        await update(ref(db, `reservations/${reservationId}`), { received: true });
+        showToast('تم تسليم الكتاب ✅');
+      } catch (error) {
+        showToast('فشل التحديث', 'warning');
+      }
+    }
+
+    async function markAllReceived(phone) {
+      try {
+        const updates = {};
+        allReservations.forEach(r => {
+          if (r.phone === phone && !r.received) {
+            updates[`reservations/${r.id}/received`] = true;
+          }
+        });
+        if (Object.keys(updates).length > 0) {
+          await update(ref(db), updates);
+          showToast('تم تسليم جميع الكتب ✅');
+        } else {
+          showToast('جميع الكتب مستلمة بالفعل', 'warning');
+        }
+      } catch (error) {
+        showToast('فشل التحديث', 'warning');
+      }
+    }
+
+    async function deleteReservation(reservationId) {
+      if (!confirm('حذف هذا الحجز؟')) return;
+      try {
+        await remove(ref(db, `reservations/${reservationId}`));
+        showToast('تم حذف الحجز 🗑️');
+      } catch (error) {
+        showToast('فشل الحذف', 'warning');
+      }
+    }
+
+    // ===== Render =====
+    function renderReservations() {
+      const search = searchInput.value.trim();
+      let filtered = allReservations;
+      
+      if (search) {
+        filtered = allReservations.filter(r => r.phone && r.phone.includes(search));
+      }
+
+      if (filtered.length === 0) {
+        resultsContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-${search ? 'search' : 'inbox'}"></i>
+            <p>${search ? 'لا توجد حجوزات لهذا الرقم' : 'لا توجد حجوزات بعد'}</p>
+          </div>`;
+        return;
+      }
+
+      // Group by phone
+      const grouped = {};
+      filtered.forEach(r => {
+        const key = r.phone;
+        if (!grouped[key]) {
+          grouped[key] = { phone: key, name: r.studentName, books: [] };
+        }
+        grouped[key].books.push(r);
+      });
+
+      let html = '';
+      Object.values(grouped).forEach(group => {
+        const hasUnreceived = group.books.some(b => !b.received);
+
+        html += `
+          <div class="student-card">
+            <div class="student-card-header">
+              <div class="student-info">
+                <span class="student-name">${escapeHtml(group.name)}</span>
+                <span class="student-phone">📱 ${escapeHtml(group.phone)}</span>
+              </div>
+              ${hasUnreceived ? `
+                <button class="mark-all-btn" onclick="window.markAllReceived('${escapeHtml(group.phone)}')">
+                  <i class="fas fa-check-double"></i> تسليم الكل
+                </button>
+              ` : ''}
+            </div>
+            <div class="books-list">
+              ${group.books.map(book => `
+                <div class="book-row">
+                  <div class="book-details">
+                    <span class="doctor-name">👨‍🏫 ${escapeHtml(book.doctor)}</span>
+                    <span class="book-title">📘 ${escapeHtml(book.book)}</span>
+                  </div>
+                  <div class="book-meta">
+                    <span class="price">${book.price} ج</span>
+                    <span class="status-badge ${book.received ? 'badge-success' : 'badge-warning'}">
+                      ${book.received ? '✅ مستلم' : '⏳ انتظار'}
+                    </span>
+                    <span class="date-text">📅 ${book.date}</span>
+                  </div>
+                  <div class="book-actions">
+                    ${!book.received ? `
+                      <button class="icon-btn deliver" onclick="window.markReceived('${book.id}')" title="تسليم">
+                        <i class="fas fa-check-circle"></i>
+                      </button>
+                    ` : ''}
+                    <button class="icon-btn delete" onclick="window.deleteReservation('${book.id}')" title="حذف">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
                 </div>
-            `;
-        } else {
-	            renderTasks(dayTasks);
-	        }
-	        
-	        const addTaskBtn = document.getElementById('addTaskBtn');
-        if (date >= today) {
-            addTaskBtn.classList.remove('disabled');
-            addTaskBtn.onclick = openAddTaskModal;
-        } else {
-	            addTaskBtn.classList.add('disabled');
-	            addTaskBtn.onclick = null;
-	        }
-	        
-	        document.getElementById('taskModal').classList.add('active');
-	    }
-	
-	    // دالة مساعدة لعرض المهام بناءً على قائمة
-	    function renderTasks(tasksToRender) {
-	        const tasksListEl = document.getElementById('tasksList');
-	        if (tasksToRender.length === 0) {
-	            tasksListEl.innerHTML = `
-	                <div class="no-tasks">
-	                    <i class="fas fa-info-circle"></i>
-	                    <p>لا توجد مهام مطابقة لفلتر البحث</p>
-	                </div>
-	            `;
-	            return;
-	        }
-	        
-	        tasksListEl.innerHTML = tasksToRender.map(task => `
-	            <div class="task-item ${task.completed ? 'completed' : ''}" onclick="toggleTask('${selectedDate}', ${task.id})">
-	                <div class="task-checkbox">
-	                    ${task.completed ? '<i class="fas fa-check"></i>' : ''}
-	                </div>
-	                <div class="task-content">
-	                    <div class="task-title">${task.title}</div>
-	                </div>
-	                <button class="delete-task-btn" onclick="event.stopPropagation(); deleteTask('${selectedDate}', ${task.id})">
-	                    <i class="fas fa-trash"></i>
-	                </button>
-	            </div>
-	        `).join('');
-	    }
-	
-	    // دالة التصفية الجديدة
-	    function filterTasks(filterType) {
-	        const dayTasks = tasks[selectedDate] || [];
-	        let filteredTasks = [];
-	        
-	        // تحديث حالة الأزرار
-	        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-	        document.querySelector(`.filter-btn[onclick="filterTasks('${filterType}')"]`).classList.add('active');
-	
-	        if (filterType === 'all') {
-	            filteredTasks = dayTasks;
-	        } else if (filterType === 'completed') {
-	            filteredTasks = dayTasks.filter(t => t.completed);
-	        } else if (filterType === 'incomplete') {
-	            filteredTasks = dayTasks.filter(t => !t.completed);
-	        }
-	        
-	        renderTasks(filteredTasks);
-	    }
-	
-	    function closeModal() {
-        document.getElementById('taskModal').classList.remove('active');
+              `).join('')}
+            </div>
+          </div>
+        `;
+      });
+
+      resultsContainer.innerHTML = html;
     }
 
-    function openAddTaskModal() {
-        const date = new Date(selectedDate);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        if (date < today) return;
-        
-        document.getElementById('taskTitle').value = '';
-        document.getElementById('taskDescription').value = '';
-        document.getElementById('addTaskModal').classList.add('active');
+    // ===== Modal =====
+    function openReservationModal() {
+      document.getElementById('studentName').value = '';
+      document.getElementById('studentPhone').value = '';
+      document.getElementById('studentName').disabled = false;
+      document.getElementById('studentPhone').disabled = false;
+      document.getElementById('collegeSelect').value = '';
+      document.getElementById('collegeSelect').disabled = false;
+      document.getElementById('deptSelect').innerHTML = '<option value="">-- اختر القسم --</option>';
+      document.getElementById('deptSelect').disabled = false;
+      document.getElementById('gradeSelect').value = '';
+      document.getElementById('gradeSelect').disabled = false;
+      document.getElementById('doctorSelect').innerHTML = '<option value="">-- اختر الكتاب --</option>';
+      document.getElementById('addBookBtn').disabled = true;
+      document.getElementById('addedSection').style.display = 'none';
+      document.getElementById('miniBooksList').innerHTML = '';
+      document.getElementById('totalPriceDisplay').textContent = '0 ج';
+      document.getElementById('finalizeBtn').disabled = true;
+      document.getElementById('finalizeBtn').innerHTML = '✅ تأكيد الحجز';
+
+      currentStudent = { name: '', phone: '', college: '', dept: '', grade: '' };
+      cartBooks = [];
+      studentLocked = false;
+      
+      setStep(0);
+      populateCollegeSelect();
+      
+      document.getElementById('reservationModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
 
-    function closeAddTaskModal() {
-        document.getElementById('addTaskModal').classList.remove('active');
+    function closeReservationModal() {
+      document.getElementById('reservationModal').classList.remove('active');
+      document.body.style.overflow = '';
     }
 
-    function addTask() {
-        const title = document.getElementById('taskTitle').value.trim();
-        if (!title) {
-            alert('الرجاء إدخال عنوان المهمة');
-            return;
-        }
-        
-        if (!tasks[selectedDate]) {
-            tasks[selectedDate] = [];
-        }
-        
-        const newTask = {
-            id: Date.now(),
-            title: title,
-            completed: false
-        };
-        
-        tasks[selectedDate].push(newTask);
-        
-        closeAddTaskModal();
-        openDayModal(selectedDate);
-        renderCalendar();
+    // ===== Utility =====
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
     }
 
-    function toggleTask(dateStr, taskId) {
-        const task = tasks[dateStr].find(t => t.id === taskId);
-        if (task) {
-	            task.completed = !task.completed;
-	            // إعادة فتح النافذة لتحديث عرض المهام والتقدم
-	            openDayModal(dateStr);
-	            renderCalendar();
-	        }
-    }
+    // ===== Init =====
+    loadReservations();
+    loadDoctors();
+    loadColleges();
 
-    function deleteTask(dateStr, taskId) {
-        if (confirm('هل تريد حذف هذه المهمة؟')) {
-            tasks[dateStr] = tasks[dateStr].filter(t => t.id !== taskId);
-            if (tasks[dateStr].length === 0) {
-	            delete tasks[dateStr];
-	            }
-	            // إعادة فتح النافذة لتحديث عرض المهام والتقدم
-	            openDayModal(dateStr);
-	            renderCalendar();
-	        }
-    }
-
-    function searchTasks() {
-        const searchTerm = document.getElementById('searchTasks').value.toLowerCase();
-        
-        if (searchTerm === '') {
-            renderCalendar();
-            return;
-        }
-
-        const daysContainer = document.getElementById('calendarDays');
-        const allDays = daysContainer.querySelectorAll('.day:not(.other-month)');
-        
-        allDays.forEach(dayEl => {
-            const dayNumber = parseInt(dayEl.textContent);
-            const dateStr = formatDate(new Date(currentDate.getFullYear(), currentDate.getMonth(), dayNumber));
-            const dayTasks = tasks[dateStr] || [];
-            
-            const hasMatch = dayTasks.some(task => 
-                task.title.toLowerCase().includes(searchTerm)
-            );
-            
-            if (hasMatch) {
-                dayEl.style.transform = 'scale(1.1)';
-                dayEl.style.boxShadow = '0 0 15px rgba(255, 195, 0, 0.6)';
-            } else {
-                dayEl.style.opacity = '0.3';
-            }
-        });
-    }
-
-    // إعادة تعيين البحث عند مسح حقل البحث
-    document.getElementById('searchTasks').addEventListener('input', function() {
-        if (this.value === '') {
-            const daysContainer = document.getElementById('calendarDays');
-            const allDays = daysContainer.querySelectorAll('.day');
-            allDays.forEach(dayEl => {
-                dayEl.style.transform = '';
-                dayEl.style.boxShadow = '';
-                dayEl.style.opacity = '';
-            });
-        }
+    // Close modal on overlay click
+    document.getElementById('reservationModal').addEventListener('click', function(e) {
+      if (e.target === this) closeReservationModal();
     });
 
-    // إغلاق النوافذ عند الضغط خارجها
-    window.onclick = function(event) {
-        const taskModal = document.getElementById('taskModal');
-        const addTaskModal = document.getElementById('addTaskModal');
-        
-        if (event.target === taskModal) {
-            closeModal();
+    // Dot click handlers
+    document.querySelectorAll('.step-dot').forEach(dot => {
+      dot.addEventListener('click', function() {
+        const step = parseInt(this.dataset.step);
+        if (step < currentStep && !studentLocked) {
+          setStep(step);
+        } else if (step > currentStep) {
+          goToStep(step);
         }
-        if (event.target === addTaskModal) {
-            closeAddTaskModal();
-        }
-    }
+      });
+    });
 
-	    // تفعيل شريط التنقل السفلي (يتم تفعيل العنصر النشط تلقائيًا عبر الكود)
-	    // لا حاجة لـ Event Listeners إضافية لأننا نستخدم روابط مباشرة (href)
-	    // يمكننا إضافة منطق لتفعيل العنصر النشط بناءً على اسم الملف الحالي إذا لزم الأمر، لكن الـ HTML يحدد "التقويم" كنشط حاليًا.
-
-    // تحميل التقويم عند بدء الصفحة
-    renderCalendar();
-</script>
+    // Expose functions to window
+    window.removeFromCart = removeFromCart;
+    window.markReceived = markReceived;
+    window.markAllReceived = markAllReceived;
+    window.deleteReservation = deleteReservation;
+    window.openReservationModal = openReservationModal;
+    window.closeReservationModal = closeReservationModal;
+    window.addBookToCart = addBookToCart;
+    window.addAnotherBook = addAnotherBook;
+    window.finalizeReservation = finalizeReservation;
+    window.goToStep = goToStep;
+    window.onCollegeChange = onCollegeChange;
+    window.onDeptChange = onDeptChange;
+    window.onGradeChange = onGradeChange;
+    window.onDoctorChange = onDoctorChange;
+    window.renderReservations = renderReservations;
+  </script>
 </body>
-</html>
+	</html>
