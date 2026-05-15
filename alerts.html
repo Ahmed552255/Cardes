@@ -1,550 +1,1023 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SORA | التنبيهات</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        :root {
-            --primary-gold: #FFC300; 
-            --dark-gold: #DAA520;
-            --background-body: #F0F2F5; 
-            --background-card: #FFFFFF;
-            --text-dark: #1C2833;
-            --text-secondary: #95a5a6;
-            --shadow-elevation-1: 0 4px 15px rgba(0, 0, 0, 0.1); 
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dash Sokoon | الإدارة الذكية</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --primary-dark: #3730A3;
+      --action: #FB923C;
+      --action-dark: #EA580C;
+      --bg: #F1F5F9;
+      --surface: #FFFFFF;
+      --text: #0F172A;
+      --text-secondary: #64748B;
+      --border: #E2E8F0;
+      --danger: #EF4444;
+      --danger-hover: #DC2626;
+      --success: #10B981;
+      --radius-xl: 1.5rem;
+      --radius-lg: 1rem;
+      --radius-md: 0.75rem;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+      --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--background-body);
-            color: var(--text-dark);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding-bottom: 80px;
-        }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(79,70,229,0.03) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(251,146,60,0.03) 0px, transparent 50%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: clamp(0.75rem, 2vw, 1.5rem);
+      line-height: 1.6;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        /* ------------------ شريط التنقل العلوي ------------------ */
-        .header {
-            background-color: var(--background-card);
-            padding: 12px 20px;
-            box-shadow: var(--shadow-elevation-1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--primary-gold);
-        }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+    /* Header */
+    .header {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      padding: clamp(1rem, 3vw, 1.5rem) clamp(1rem, 3vw, 1.5rem);
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: clamp(1rem, 2vw, 1.5rem);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
 
-        .header .mic-icon,
-        .header .user-icon {
-            font-size: 1.3rem; 
-            color: var(--text-dark); 
-            cursor: pointer;
-            transition: color 0.3s;
-        }
+    .header h1 {
+      font-size: clamp(1.4rem, 4vw, 1.8rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--action));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
 
-        .header .mic-icon:hover,
-        .header .user-icon:hover {
-            color: var(--primary-gold);
-        }
+    .header h1 span {
+      color: var(--action);
+    }
 
-        /* ------------------ محتوى التنبيهات ------------------ */
-        .alerts-container {
-            flex-grow: 1;
-            max-width: 100%;
-            margin: 0 auto;
-            width: 100%;
-            padding: 15px;
-            overflow-y: auto;
-            padding-bottom: 20px;
-        }
+    .date-badge {
+      background: var(--bg);
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+    }
 
-        .alerts-card {
-            background: var(--background-card);
-            border-radius: 20px;
-            box-shadow: var(--shadow-elevation-1);
-            overflow: hidden;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0.4rem;
+      background: var(--surface);
+      padding: 0.4rem;
+      border-radius: var(--radius-lg);
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
 
-        .alerts-header {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--primary-gold);
-            padding-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .alerts-actions {
-            display: flex;
-            gap: 10px;
-        }
+    .tab {
+      flex: 1;
+      min-width: fit-content;
+      padding: 0.75rem 1.2rem;
+      border: none;
+      background: transparent;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+      user-select: none;
+    }
 
-        .alerts-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+    .tab.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: var(--shadow);
+    }
 
-        .alert-item {
-            display: flex;
-            align-items: center; /* تم التعديل ليصبح في المنتصف عمودياً */
-            gap: 15px;
-            padding: 15px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s, background 0.3s;
-            cursor: pointer;
-            position: relative;
-        }
+    .tab:not(.active):hover {
+      background: #F1F5F9;
+    }
 
-        .alert-item:hover {
-            transform: translateY(-2px);
-            background: #fff;
-        }
-        
-        .alert-item.unread {
-            border-right: 5px solid var(--primary-gold);
-            background: #fff8e1; /* خلفية فاتحة للتنبيهات غير المقروءة */
-        }
+    .tab-content {
+      display: none;
+      animation: fadeSlide 0.35s ease;
+    }
 
-        .alert-icon {
-            font-size: 1.5rem;
-            min-width: 30px;
-            text-align: center;
-        }
+    .tab-content.active {
+      display: block;
+    }
 
-        .alert-icon.new {
-            color: #2ecc71; /* أخضر */
-        }
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        .alert-icon.reminder {
-            color: #f39c12; /* برتقالي */
-        }
+    /* Card */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      padding: clamp(1rem, 3vw, 1.5rem);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
 
-        .alert-icon.info {
-            color: #3498db; /* أزرق */
-        }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
 
-        .alert-content {
-            flex-grow: 1;
-            cursor: pointer; /* لجعل المحتوى قابلاً للنقر لفتح التفاصيل */
-        }
+    .card-title {
+      font-size: clamp(1rem, 2.5vw, 1.15rem);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary);
+    }
 
-        .alert-title {
-            font-weight: 700;
-            margin-bottom: 5px;
-            font-size: 1rem;
-        }
+    /* Buttons */
+    .btn {
+      padding: 0.65rem 1.4rem;
+      border: none;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+      white-space: nowrap;
+      user-select: none;
+      text-decoration: none;
+    }
 
-        .alert-date {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            display: block;
-            margin-top: 5px;
-        }
+    .btn:active {
+      transform: scale(0.96);
+    }
 
-        .mark-all-read, .delete-all-alerts {
-            background: var(--primary-gold);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: opacity 0.3s;
-        }
-        
-        .delete-all-alerts {
-            background: #e74c3c; /* لون أحمر للحذف */
-        }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 2px 8px rgba(79,70,229,0.3);
+    }
 
-        .mark-all-read:hover, .delete-all-alerts:hover {
-            opacity: 0.8;
-        }
-        
-        /* زر الحذف الفردي */
-        .delete-alert-btn {
-            background: none;
-            border: none;
-            color: #e74c3c;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: color 0.3s;
-            padding: 5px;
-            margin-right: 10px;
-            flex-shrink: 0; /* لمنع الزر من الانكماش */
-        }
-        
-        .delete-alert-btn:hover {
-            color: #c0392b;
-        }
-        
-        /* ------------------ أزرار التصفية ------------------ */
-        .alert-filters {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      box-shadow: 0 4px 12px rgba(79,70,229,0.4);
+    }
 
-        .filter-btn {
-            background: #e0e0e0;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: var(--text-dark);
-        }
+    .btn-action {
+      background: var(--action);
+      color: white;
+      box-shadow: 0 2px 8px rgba(251,146,60,0.3);
+    }
 
-        .filter-btn.active {
-            background: var(--primary-gold);
-            color: white;
-            box-shadow: 0 2px 5px rgba(255, 195, 0, 0.3);
-        }
-        
-        /* ------------------ النوافذ المنبثقة (Modal) ------------------ */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+    .btn-action:hover {
+      background: var(--action-dark);
+      box-shadow: 0 4px 12px rgba(251,146,60,0.4);
+    }
 
-        .modal.active {
-            display: flex;
-        }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--text);
+    }
 
-        .modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            max-width: 500px;
-            width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
-            position: relative;
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-        
-        .modal-header h2 {
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-        
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-secondary);
-        }
-        
-        .alert-details p {
-            line-height: 1.6;
-            color: #555;
-        }
-        
-        .alert-details .date-info {
-            font-size: 0.85rem;
-            color: var(--primary-gold);
-            margin-top: 15px;
-            font-weight: 600;
-        }
+    .btn-outline:hover {
+      background: #F8FAFC;
+      border-color: #CBD5E1;
+    }
 
-        /* ------------------ شريط التنقل السفلي ------------------ */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            background-color: var(--background-card);
-            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 1000;
-        }
+    .btn-sm {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+    }
 
-        .nav-item {
-            flex-basis: 20%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-size: 0.7rem;
-            font-weight: 600;
-            transition: color 0.3s, transform 0.2s;
-            cursor: pointer;
-            padding: 8px;
-        }
+    .btn-icon {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0.4rem;
+      border-radius: 0.4rem;
+      transition: var(--transition);
+      color: var(--text-secondary);
+    }
 
-        .nav-item i {
-            font-size: 1.3rem;
-            margin-bottom: 4px;
-        }
-        
-        .nav-item.active {
-            color: var(--primary-gold);
-            transform: translateY(-2px);
-        }
+    .btn-icon.edit:hover {
+      color: var(--primary);
+      background: rgba(79,70,229,0.08);
+    }
 
-        /* ------------------ استجابة الشاشات ------------------ */
-        @media (max-width: 768px) {
-            .alerts-card {
-                padding: 15px;
-            }
-            .alert-item {
-                padding: 12px;
-            }
-            .alert-title {
-                font-size: 0.9rem;
-            }
-        }
-    </style>
+    .btn-icon.delete:hover {
+      color: var(--danger);
+      background: rgba(239,68,68,0.08);
+    }
+
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 0 -0.5rem;
+      padding: 0 0.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
+    }
+
+    th {
+      text-align: right;
+      padding: 0.8rem 0.6rem;
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.8rem 0.6rem;
+      border-bottom: 1px solid #F1F5F9;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #F8FAFC;
+    }
+
+    .price {
+      font-weight: 800;
+      color: var(--primary);
+      direction: ltr;
+      text-align: right;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.3rem;
+      justify-content: flex-end;
+    }
+
+    /* Empty State */
+    .empty {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-secondary);
+    }
+
+    .empty i {
+      font-size: 2.5rem;
+      margin-bottom: 0.8rem;
+      opacity: 0.4;
+    }
+
+    .empty p {
+      font-weight: 600;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: clamp(1.2rem, 3vw, 1.8rem);
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+      transform: translateY(20px);
+      transition: var(--transition);
+    }
+
+    .modal-overlay.active .modal {
+      transform: translateY(0);
+    }
+
+    .modal h3 {
+      font-size: 1.1rem;
+      margin-bottom: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary);
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 0.3rem;
+      color: var(--text-secondary);
+    }
+
+    .form-group input,
+    .form-group input[list] {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      transition: var(--transition);
+      background: var(--bg);
+      font-family: inherit;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+      background: white;
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1E293B;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      z-index: 2000;
+      transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.error {
+      background: var(--danger);
+    }
+
+    /* Loader */
+    .spinner {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+      }
+
+      .card-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .card-header .btn {
+        justify-content: center;
+      }
+
+      th, td {
+        padding: 0.6rem 0.4rem;
+      }
+
+      .modal {
+        margin: 0.5rem;
+        border-radius: var(--radius-lg);
+      }
+    }
+
+    @media (max-width: 380px) {
+      .tab {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.8rem;
+        gap: 0.3rem;
+      }
+
+      table {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<div class="header">
-    <div class="logo">SORA</div>
-    <div class="user-info">
-        <i class="fas fa-microphone mic-icon" title="الأوامر الصوتية"></i>
-        <i class="fas fa-user-circle user-icon" title="الملف الشخصي"></i>
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <h1>DASH <span>SOKOON</span></h1>
+    <div class="date-badge">
+      <i class="far fa-calendar-alt"></i>
+      <span id="dateDisplay"></span>
     </div>
-</div>
+  </div>
 
-<div class="alerts-container">
-    <div class="alerts-card">
-        <div class="alerts-header">
-            <span>🔔 التنبيهات</span>
-            <div class="alerts-actions">
-                <button class="mark-all-read" onclick="markAllAsRead()">قراءة الكل</button>
-                <button class="delete-all-alerts" onclick="deleteAllAlerts()">حذف الكل</button>
-            </div>
-        </div>
-        
-        <div class="alert-filters">
-            <button class="filter-btn active" onclick="filterAlerts('all')">الكل</button>
-            <button class="filter-btn" onclick="filterAlerts('unread')">غير مقروء</button>
-            <button class="filter-btn" onclick="filterAlerts('read')">مقروء</button>
-        </div>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" data-tab="staff-tab">
+      <i class="fas fa-user-shield"></i> الموظفين
+    </button>
+    <button class="tab" data-tab="books-tab">
+      <i class="fas fa-book"></i> الكتب
+    </button>
+  </div>
 
-        <div class="alerts-list" id="alertsList">
-            <!-- سيتم إضافة التنبيهات هنا بواسطة JavaScript -->
-        </div>
+  <!-- Staff Tab -->
+  <div id="staff-tab" class="tab-content active">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><i class="fas fa-users"></i> إدارة الموظفين</div>
+        <button class="btn btn-action" onclick="openModal('staff')">
+          <i class="fas fa-plus"></i> إضافة موظف
+        </button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>الاسم</th>
+              <th>اسم المستخدم</th>
+              <th>كلمة المرور</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="staffTableBody">
+            <tr class="empty"><td colspan="4"><i class="fas fa-inbox"></i><p>جاري التحميل...</p></td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-</div>
+  </div>
 
-<!-- نافذة عرض تفاصيل التنبيه -->
-<div class="modal" id="alertDetailsModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 id="modalAlertTitle"></h2>
-            <button class="close-btn" onclick="closeAlertDetailsModal()">×</button>
-        </div>
-        <div class="alert-details">
-            <p id="modalAlertNotes"></p>
-            <div class="date-info" id="modalAlertDate"></div>
-        </div>
+  <!-- Books Tab -->
+  <div id="books-tab" class="tab-content">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><i class="fas fa-book-open"></i> إدارة الكتب</div>
+        <button class="btn btn-action" onclick="openModal('book')">
+          <i class="fas fa-plus"></i> إضافة كتاب
+        </button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>الدكتور</th>
+              <th>المادة</th>
+              <th>الكلية/القسم</th>
+              <th>السعر</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="booksTableBody">
+            <tr class="empty"><td colspan="5"><i class="fas fa-inbox"></i><p>جاري التحميل...</p></td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
 </div>
 
-<div class="bottom-nav">
-    <a class="nav-item" id="nav-home" href="index.html">
-        <i class="fas fa-home"></i>
-        <span>الرئيسية</span>
-    </a>
-    
-    <a class="nav-item active" id="nav-alerts" href="alerts.html">
-        <i class="fas fa-bell"></i>
-        <span>التنبيهات</span>
-    </a>
-    
-    <a class="nav-item" id="nav-tasks" href="tasks.html">
-        <i class="fas fa-tasks"></i> 
-        <span>المهام</span>
-    </a>
-    
-    <a class="nav-item" id="nav-calendar" href="calendar.html">
-        <i class="fas fa-calendar-alt"></i>
-        <span>التقويم</span>
-    </a>
-    
-    <a class="nav-item" id="nav-profile" href="profile.html">
-        <i class="fas fa-user-circle"></i>
-        <span>ملفي</span>
-    </a>
+<!-- Staff Modal -->
+<div class="modal-overlay" id="staffModal">
+  <div class="modal">
+    <h3 id="staffModalTitle"><i class="fas fa-user-plus"></i> إضافة موظف</h3>
+    <input type="hidden" id="staffId">
+    <div class="form-group">
+      <label>الاسم الكامل</label>
+      <input type="text" id="staffName" placeholder="أدخل الاسم الثلاثي">
+    </div>
+    <div class="form-group">
+      <label>اسم المستخدم</label>
+      <input type="text" id="staffUser" placeholder="اسم الدخول للنظام">
+    </div>
+    <div class="form-group">
+      <label>كلمة المرور</label>
+      <input type="password" id="staffPass" placeholder="••••••••">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('staff')">إلغاء</button>
+      <button class="btn btn-primary" id="staffSaveBtn" onclick="saveStaff()">
+        <i class="fas fa-save"></i> حفظ
+      </button>
+    </div>
+  </div>
 </div>
 
-<script>
-    let currentFilter = 'all';
+<!-- Book Modal -->
+<div class="modal-overlay" id="bookModal">
+  <div class="modal">
+    <h3 id="bookModalTitle"><i class="fas fa-plus-circle"></i> إضافة كتاب</h3>
+    <input type="hidden" id="bookId">
+    <div class="form-group">
+      <label>اسم الدكتور</label>
+      <input type="text" id="docName" placeholder="د. أحمد فوزي">
+    </div>
+    <div class="form-group">
+      <label>المادة</label>
+      <input type="text" id="bookTitle" placeholder="اسم المادة الدراسية">
+    </div>
+    <div class="form-group">
+      <label>الكلية</label>
+      <input list="collegesList" id="collegeInput" placeholder="اختر أو اكتب اسم الكلية">
+      <datalist id="collegesList"></datalist>
+    </div>
+    <div class="form-group">
+      <label>القسم</label>
+      <input list="deptsList" id="deptInput" placeholder="اختر أو اكتب اسم القسم">
+      <datalist id="deptsList"></datalist>
+    </div>
+    <div class="form-group">
+      <label>السعر (ج.م)</label>
+      <input type="number" id="bookPrice" placeholder="0.00" step="0.01" min="0">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('book')">إلغاء</button>
+      <button class="btn btn-primary" id="bookSaveBtn" onclick="saveBook()">
+        <i class="fas fa-save"></i> حفظ
+      </button>
+    </div>
+  </div>
+</div>
 
-    // استخدام let بدلاً من const للسماح بتعديل المصفوفة
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
-    function renderAlerts() {
-        const alertsList = document.getElementById('alertsList');
-        alertsList.innerHTML = '';
-        
-        let filteredAlerts = alertsData;
-        if (currentFilter === 'unread') {
-            filteredAlerts = alertsData.filter(a => !a.read);
-        } else if (currentFilter === 'read') {
-            filteredAlerts = alertsData.filter(a => a.read);
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, set, push, update, remove, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  // ========== إعداد Firebase ==========
+  const firebaseConfig = {
+    apiKey: "AIzaSyB1iGYl3_VuVAOyVexQsg3rKTDt0OZMRSk",
+    authDomain: "dagd-9b228.firebaseapp.com",
+    databaseURL: "https://dagd-9b228-default-rtdb.firebaseio.com",
+    projectId: "dagd-9b228",
+    storageBucket: "dagd-9b228.firebasestorage.app",
+    messagingSenderId: "299664084614",
+    appId: "1:299664084614:web:39df93bcbde273c4d84307",
+    measurementId: "G-52C4B7Q2YQ"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // ========== المتغيرات العامة ==========
+  let staffData = [];
+  let booksData = [];
+  let dynamicLists = { colleges: [], depts: [] };
+
+  // ========== عناصر DOM ==========
+  const staffTableBody = document.getElementById('staffTableBody');
+  const booksTableBody = document.getElementById('booksTableBody');
+  const toast = document.getElementById('toast');
+  let toastTimer;
+
+  // ========== دوال مساعدة ==========
+  function showToast(msg, isError = false) {
+    clearTimeout(toastTimer);
+    toast.textContent = msg;
+    toast.className = 'toast' + (isError ? ' error' : '');
+    toast.classList.add('show');
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  function showLoading(tableBody, colspan) {
+    tableBody.innerHTML = `<tr class="empty"><td colspan="${colspan}"><div class="spinner" style="border-color: rgba(79,70,229,0.3); border-top-color: #4F46E5; width: 1.5rem; height: 1.5rem;"></div><p>جاري التحميل...</p></td></tr>`;
+  }
+
+  function showEmpty(tableBody, colspan, icon, msg) {
+    tableBody.innerHTML = `<tr class="empty"><td colspan="${colspan}"><i class="fas ${icon}"></i><p>${msg}</p></td></tr>`;
+  }
+
+  // ========== التاريخ ==========
+  function updateDate() {
+    const d = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('dateDisplay').textContent = d.toLocaleDateString('ar-EG', options);
+  }
+  updateDate();
+
+  // ========== التبويبات ==========
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById(this.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ========== المودال ==========
+  function openModal(type, id = null) {
+    const modal = document.getElementById(type + 'Modal');
+    const title = document.getElementById(type + 'ModalTitle');
+    
+    if (type === 'staff') {
+      document.getElementById('staffId').value = '';
+      document.getElementById('staffName').value = '';
+      document.getElementById('staffUser').value = '';
+      document.getElementById('staffPass').value = '';
+      title.innerHTML = '<i class="fas fa-user-plus"></i> إضافة موظف';
+      
+      if (id) {
+        const item = staffData.find(s => s.id === id);
+        if (item) {
+          document.getElementById('staffId').value = item.id;
+          document.getElementById('staffName').value = item.name;
+          document.getElementById('staffUser').value = item.username;
+          document.getElementById('staffPass').value = item.password;
+          title.innerHTML = '<i class="fas fa-user-edit"></i> تعديل موظف';
         }
-
-        if (filteredAlerts.length === 0) {
-            alertsList.innerHTML = `
-                <div style="text-align: center; color: #999; padding: 40px; background: #fff; border-radius: 10px; margin-top: 20px;">
-                    <i class="fas fa-box-open" style="font-size: 2.5rem; margin-bottom: 10px;"></i>
-                    <p>لا توجد تنبيهات ${currentFilter === 'unread' ? 'غير مقروءة' : currentFilter === 'read' ? 'مقروءة' : 'حالياً'} مطابقة.</p>
-                </div>
-            `;
-            return;
+      }
+    } else {
+      document.getElementById('bookId').value = '';
+      document.getElementById('docName').value = '';
+      document.getElementById('bookTitle').value = '';
+      document.getElementById('collegeInput').value = '';
+      document.getElementById('deptInput').value = '';
+      document.getElementById('bookPrice').value = '';
+      title.innerHTML = '<i class="fas fa-plus-circle"></i> إضافة كتاب';
+      updateDatalists();
+      
+      if (id) {
+        const item = booksData.find(b => b.id === id);
+        if (item) {
+          document.getElementById('bookId').value = item.id;
+          document.getElementById('docName').value = item.doc;
+          document.getElementById('bookTitle').value = item.title;
+          document.getElementById('collegeInput').value = item.college;
+          document.getElementById('deptInput').value = item.dept || '';
+          document.getElementById('bookPrice').value = item.price;
+          title.innerHTML = '<i class="fas fa-edit"></i> تعديل كتاب';
         }
+      }
+    }
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
 
-        filteredAlerts.forEach(alert => {
-            const item = document.createElement('div');
-            item.className = `alert-item ${alert.read ? 'read' : 'unread'}`;
-            item.setAttribute('data-id', alert.id);
-            // item.onclick = () => openAlertDetails(alert.id); // تم نقل النقر إلى المحتوى
+  function closeModal(type) {
+    document.getElementById(type + 'Modal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
 
-            let iconClass = '';
-            if (alert.type === 'new') iconClass = 'fas fa-star';
-            else if (alert.type === 'reminder') iconClass = 'fas fa-clock';
-            else if (alert.type === 'info') iconClass = 'fas fa-info-circle';
+  // إغلاق المودال بالنقر خارجه
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+  });
 
-            item.innerHTML = `
-                <div class="alert-icon ${alert.type}">
-                    <i class="${iconClass}"></i>
-                </div>
-                <div class="alert-content" onclick="openAlertDetails(${alert.id})">
-                    <div class="alert-title">${alert.title}</div>
-                    <span class="alert-date">${alert.date}</span>
-                </div>
-                <button class="delete-alert-btn" onclick="event.stopPropagation(); deleteAlert(${alert.id})">
-                    <i class="fas fa-trash"></i>
-                </button>
-            `;
-            alertsList.appendChild(item);
+  // ========== Firebase: الموظفين ==========
+  const staffRef = ref(db, 'staff');
+
+  function loadStaff() {
+    showLoading(staffTableBody, 4);
+    
+    onValue(staffRef, (snapshot) => {
+      staffData = [];
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        staffData = Object.keys(data).map(key => ({
+          id: key,
+          ...data[key]
+        }));
+        renderStaff();
+      } else {
+        showEmpty(staffTableBody, 4, 'fa-user-slash', 'لا يوجد موظفين حتى الآن');
+      }
+    }, (error) => {
+      showToast('فشل تحميل بيانات الموظفين', true);
+      showEmpty(staffTableBody, 4, 'fa-exclamation-circle', 'خطأ في التحميل');
+    });
+  }
+
+  function renderStaff() {
+    if (staffData.length === 0) {
+      showEmpty(staffTableBody, 4, 'fa-user-slash', 'لا يوجد موظفين حتى الآن');
+      return;
+    }
+    
+    staffTableBody.innerHTML = staffData.map(s => `
+      <tr>
+        <td>${escapeHtml(s.name)}</td>
+        <td>${escapeHtml(s.username)}</td>
+        <td>••••••</td>
+        <td>
+          <div class="actions">
+            <button class="btn-icon edit" onclick="window.editStaff('${s.id}')" title="تعديل">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn-icon delete" onclick="window.deleteStaff('${s.id}')" title="حذف">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  async function saveStaff() {
+    const id = document.getElementById('staffId').value;
+    const name = document.getElementById('staffName').value.trim();
+    const username = document.getElementById('staffUser').value.trim();
+    const password = document.getElementById('staffPass').value.trim();
+    
+    if (!name || !username || !password) {
+      showToast('الرجاء ملء جميع الحقول', true);
+      return;
+    }
+
+    const btn = document.getElementById('staffSaveBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> جاري الحفظ...';
+
+    const staffObj = { name, username, password };
+
+    try {
+      if (id) {
+        await update(ref(db, `staff/${id}`), staffObj);
+        showToast('تم تعديل الموظف بنجاح ✅');
+      } else {
+        await push(staffRef, staffObj);
+        showToast('تم إضافة الموظف بنجاح ✅');
+      }
+      closeModal('staff');
+    } catch (error) {
+      showToast('حدث خطأ أثناء الحفظ', true);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-save"></i> حفظ';
+    }
+  }
+
+  window.editStaff = function(id) {
+    openModal('staff', id);
+  };
+
+  window.deleteStaff = async function(id) {
+    if (!confirm('هل أنت متأكد من حذف هذا الموظف؟')) return;
+    
+    try {
+      await remove(ref(db, `staff/${id}`));
+      showToast('تم حذف الموظف بنجاح 🗑️');
+    } catch (error) {
+      showToast('فشل حذف الموظف', true);
+    }
+  };
+
+  // ========== Firebase: الكتب ==========
+  const booksRef = ref(db, 'books');
+
+  function loadBooks() {
+    showLoading(booksTableBody, 5);
+    
+    onValue(booksRef, (snapshot) => {
+      booksData = [];
+      dynamicLists = { colleges: [], depts: [] };
+      
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        booksData = Object.keys(data).map(key => ({
+          id: key,
+          ...data[key]
+        }));
+        
+        // جمع الكليات والأقسام
+        booksData.forEach(b => {
+          if (b.college && !dynamicLists.colleges.includes(b.college)) {
+            dynamicLists.colleges.push(b.college);
+          }
+          if (b.dept && !dynamicLists.depts.includes(b.dept)) {
+            dynamicLists.depts.push(b.dept);
+          }
         });
-    }
-    
-    function filterAlerts(filterType) {
-        currentFilter = filterType;
         
-        // تحديث حالة الأزرار
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelector(`.filter-btn[onclick="filterAlerts('${filterType}')"]`).classList.add('active');
-        
-        renderAlerts();
-    }
+        renderBooks();
+      } else {
+        showEmpty(booksTableBody, 5, 'fa-book-open', 'لا يوجد كتب حتى الآن');
+      }
+      updateDatalists();
+    }, (error) => {
+      showToast('فشل تحميل بيانات الكتب', true);
+      showEmpty(booksTableBody, 5, 'fa-exclamation-circle', 'خطأ في التحميل');
+    });
+  }
 
-    function openAlertDetails(id) {
-        const alert = alertsData.find(a => a.id === id);
-        if (alert) {
-            // تحديث حالة التنبيه إلى مقروء
-            alert.read = true;
-            
-            // عرض التفاصيل في النافذة المنبثقة
-            document.getElementById('modalAlertTitle').textContent = alert.title;
-            document.getElementById('modalAlertNotes').textContent = alert.notes;
-            document.getElementById('modalAlertDate').textContent = `تاريخ التنبيه: ${alert.date}`;
-            
-            document.getElementById('alertDetailsModal').classList.add('active');
-            
-            // إعادة عرض القائمة لتحديث حالة "مقروء"
-            renderAlerts();
-        }
-    }
-
-    function closeAlertDetailsModal() {
-        document.getElementById('alertDetailsModal').classList.remove('active');
-    }
-
-    function markAllAsRead() {
-        alertsData.forEach(alert => {
-            alert.read = true;
-        });
-        renderAlerts();
+  function renderBooks() {
+    if (booksData.length === 0) {
+      showEmpty(booksTableBody, 5, 'fa-book-open', 'لا يوجد كتب حتى الآن');
+      return;
     }
     
-    // ميزة حذف تنبيه فردي
-    function deleteAlert(id) {
-        if (confirm('هل أنت متأكد من حذف هذا التنبيه؟')) {
-            alertsData = alertsData.filter(alert => alert.id !== id);
-            renderAlerts();
-        }
-    }
+    booksTableBody.innerHTML = booksData.map(b => `
+      <tr>
+        <td>${escapeHtml(b.doc)}</td>
+        <td>${escapeHtml(b.title)}</td>
+        <td>${escapeHtml(b.college)}${b.dept ? ' - ' + escapeHtml(b.dept) : ''}</td>
+        <td class="price">${Number(b.price).toFixed(2)} ج</td>
+        <td>
+          <div class="actions">
+            <button class="btn-icon edit" onclick="window.editBook('${b.id}')" title="تعديل">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn-icon delete" onclick="window.deleteBook('${b.id}')" title="حذف">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function updateDatalists() {
+    document.getElementById('collegesList').innerHTML = dynamicLists.colleges.map(c => `<option value="${escapeHtml(c)}">`).join('');
+    document.getElementById('deptsList').innerHTML = dynamicLists.depts.map(d => `<option value="${escapeHtml(d)}">`).join('');
+  }
+
+  async function saveBook() {
+    const id = document.getElementById('bookId').value;
+    const doc = document.getElementById('docName').value.trim();
+    const title = document.getElementById('bookTitle').value.trim();
+    const college = document.getElementById('collegeInput').value.trim();
+    const dept = document.getElementById('deptInput').value.trim();
+    const price = document.getElementById('bookPrice').value.trim();
     
-    // ميزة حذف جميع التنبيهات
-    function deleteAllAlerts() {
-        if (confirm('هل أنت متأكد من حذف جميع التنبيهات؟ لا يمكن التراجع عن هذا الإجراء.')) {
-            alertsData = [];
-            renderAlerts();
-        }
+    if (!doc || !title || !college || !price) {
+      showToast('الرجاء ملء جميع الحقول المطلوبة', true);
+      return;
     }
 
-    // إغلاق النافذة عند الضغط خارجها
-    window.onclick = function(event) {
-        const modal = document.getElementById('alertDetailsModal');
-        if (event.target === modal) {
-            closeAlertDetailsModal();
-        }
+    if (isNaN(price) || Number(price) < 0) {
+      showToast('السعر غير صحيح', true);
+      return;
     }
 
-    // تهيئة الصفحة
-    document.addEventListener('DOMContentLoaded', renderAlerts);
+    const btn = document.getElementById('bookSaveBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> جاري الحفظ...';
+
+    const bookObj = {
+      doc,
+      title,
+      college,
+      dept: dept || '',
+      price: Number(price)
+    };
+
+    try {
+      if (id) {
+        await update(ref(db, `books/${id}`), bookObj);
+        showToast('تم تعديل الكتاب بنجاح ✅');
+      } else {
+        await push(booksRef, bookObj);
+        showToast('تم إضافة الكتاب بنجاح ✅');
+      }
+      closeModal('book');
+    } catch (error) {
+      showToast('حدث خطأ أثناء الحفظ', true);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-save"></i> حفظ';
+    }
+  }
+
+  window.editBook = function(id) {
+    openModal('book', id);
+  };
+
+  window.deleteBook = async function(id) {
+    if (!confirm('هل أنت متأكد من حذف هذا الكتاب؟')) return;
+    
+    try {
+      await remove(ref(db, `books/${id}`));
+      showToast('تم حذف الكتاب بنجاح 🗑️');
+    } catch (error) {
+      showToast('فشل حذف الكتاب', true);
+    }
+  };
+
+  // ========== حماية XSS ==========
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // ========== بدء التشغيل ==========
+  loadStaff();
+  loadBooks();
+
+  // تعريض الدوال للاستخدام العام
+  window.openModal = openModal;
+  window.closeModal = closeModal;
+  window.saveStaff = saveStaff;
+  window.saveBook = saveBook;
 </script>
 
 </body>
-</html>
+    </html>
