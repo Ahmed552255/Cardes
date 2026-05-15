@@ -3,1021 +3,639 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dash Sokoon | الإدارة الذكية</title>
+  <title>Dash Sokoon Admin | إدارة الكتب والطلاب</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
       --primary: #4F46E5;
-      --primary-dark: #3730A3;
       --action: #FB923C;
-      --action-dark: #EA580C;
-      --bg: #F1F5F9;
+      --bg: #F8FAFC;
       --surface: #FFFFFF;
       --text: #0F172A;
       --text-secondary: #64748B;
       --border: #E2E8F0;
-      --danger: #EF4444;
-      --danger-hover: #DC2626;
-      --success: #10B981;
-      --radius-xl: 1.5rem;
-      --radius-lg: 1rem;
-      --radius-md: 0.75rem;
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-      --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
-      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
-      --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --radius-lg: 1.2rem;
+      --radius-md: 0.8rem;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; padding: 1rem; }
 
-    body {
-      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-      background: var(--bg);
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(79,70,229,0.03) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(251,146,60,0.03) 0px, transparent 50%);
-      color: var(--text);
-      min-height: 100vh;
-      padding: clamp(0.75rem, 2vw, 1.5rem);
-      line-height: 1.6;
-      -webkit-tap-highlight-color: transparent;
-    }
+    .admin-wrapper { max-width: 1100px; margin: 0 auto; }
 
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    /* Header */
-    .header {
-      background: var(--surface);
-      border-radius: var(--radius-xl);
-      padding: clamp(1rem, 3vw, 1.5rem) clamp(1rem, 3vw, 1.5rem);
-      box-shadow: var(--shadow);
+    .admin-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: clamp(1rem, 2vw, 1.5rem);
-      border: 1px solid var(--border);
-      backdrop-filter: blur(10px);
-    }
-
-    .header h1 {
-      font-size: clamp(1.4rem, 4vw, 1.8rem);
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--primary), var(--action));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -0.5px;
-    }
-
-    .header h1 span {
-      color: var(--action);
-    }
-
-    .date-badge {
-      background: var(--bg);
-      padding: 0.5rem 1rem;
-      border-radius: 2rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      white-space: nowrap;
-    }
-
-    /* Tabs */
-    .tabs {
-      display: flex;
-      gap: 0.4rem;
+      margin-bottom: 2rem;
+      padding: 1rem;
       background: var(--surface);
-      padding: 0.4rem;
       border-radius: var(--radius-lg);
-      margin-bottom: 1.5rem;
-      box-shadow: var(--shadow-sm);
-      border: 1px solid var(--border);
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .tab {
-      flex: 1;
-      min-width: fit-content;
-      padding: 0.75rem 1.2rem;
-      border: none;
-      background: transparent;
-      border-radius: var(--radius-md);
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      color: var(--text-secondary);
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      white-space: nowrap;
-      user-select: none;
-    }
-
-    .tab.active {
-      background: var(--primary);
-      color: white;
       box-shadow: var(--shadow);
     }
+    .admin-header h1 { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+    .admin-header h1 span { color: var(--action); }
+    .header-btns { display: flex; gap: 0.6rem; align-items: center; }
 
-    .tab:not(.active):hover {
-      background: #F1F5F9;
-    }
-
-    .tab-content {
-      display: none;
-      animation: fadeSlide 0.35s ease;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    @keyframes fadeSlide {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Card */
-    .card {
-      background: var(--surface);
-      border-radius: var(--radius-xl);
-      padding: clamp(1rem, 3vw, 1.5rem);
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .card-title {
-      font-size: clamp(1rem, 2.5vw, 1.15rem);
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--primary);
-    }
-
-    /* Buttons */
     .btn {
-      padding: 0.65rem 1.4rem;
+      padding: 0.7rem 1.5rem;
       border: none;
       border-radius: var(--radius-md);
       font-weight: 700;
-      font-size: 0.9rem;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      transition: var(--transition);
-      white-space: nowrap;
-      user-select: none;
-      text-decoration: none;
+      transition: all 0.3s;
+      font-size: 0.95rem;
     }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: #4338CA; transform: translateY(-2px); }
+    .btn-action { background: var(--action); color: white; }
+    .btn-action:hover { background: #EA580C; transform: translateY(-2px); }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { background: var(--border); }
+    .btn-sm { padding: 0.4rem 0.9rem; font-size: 0.85rem; }
 
-    .btn:active {
-      transform: scale(0.96);
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
     }
-
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-      box-shadow: 0 2px 8px rgba(79,70,229,0.3);
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-dark);
-      box-shadow: 0 4px 12px rgba(79,70,229,0.4);
-    }
-
-    .btn-action {
-      background: var(--action);
-      color: white;
-      box-shadow: 0 2px 8px rgba(251,146,60,0.3);
-    }
-
-    .btn-action:hover {
-      background: var(--action-dark);
-      box-shadow: 0 4px 12px rgba(251,146,60,0.4);
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 1.5px solid var(--border);
-      color: var(--text);
-    }
-
-    .btn-outline:hover {
-      background: #F8FAFC;
-      border-color: #CBD5E1;
-    }
-
-    .btn-sm {
-      padding: 0.4rem 0.8rem;
-      font-size: 0.8rem;
-    }
-
-    .btn-icon {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-      padding: 0.4rem;
-      border-radius: 0.4rem;
-      transition: var(--transition);
-      color: var(--text-secondary);
-    }
-
-    .btn-icon.edit:hover {
-      color: var(--primary);
-      background: rgba(79,70,229,0.08);
-    }
-
-    .btn-icon.delete:hover {
-      color: var(--danger);
-      background: rgba(239,68,68,0.08);
-    }
-
-    /* Table */
-    .table-wrap {
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin: 0 -0.5rem;
-      padding: 0 0.5rem;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: clamp(0.8rem, 2vw, 0.9rem);
-    }
-
-    th {
-      text-align: right;
-      padding: 0.8rem 0.6rem;
-      color: var(--text-secondary);
-      font-weight: 700;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border-bottom: 2px solid var(--border);
-      white-space: nowrap;
-    }
-
-    td {
-      padding: 0.8rem 0.6rem;
-      border-bottom: 1px solid #F1F5F9;
-    }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    tr:hover td {
-      background: #F8FAFC;
-    }
-
-    .price {
-      font-weight: 800;
-      color: var(--primary);
-      direction: ltr;
-      text-align: right;
-    }
-
-    .actions {
+    .card-header {
       display: flex;
-      gap: 0.3rem;
-      justify-content: flex-end;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.2rem;
     }
+    .card-title { font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 0.6rem; color: var(--primary); }
 
-    /* Empty State */
-    .empty {
-      text-align: center;
-      padding: 2.5rem 1rem;
-      color: var(--text-secondary);
-    }
+    .table-wrapper { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: right; padding: 1rem; color: var(--text-secondary); border-bottom: 2px solid var(--border); font-size: 0.9rem; }
+    td { padding: 1rem; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+    .price-tag { font-weight: 800; color: var(--primary); }
+    .actions { display: flex; gap: 0.5rem; }
+    .btn-icon { background: none; border: none; cursor: pointer; font-size: 1.1rem; padding: 0.3rem; border-radius: 0.3rem; transition: 0.2s; }
+    .btn-icon.edit { color: var(--primary); }
+    .btn-icon.edit:hover { background: rgba(79,70,229,0.1); }
+    .btn-icon.delete { color: #EF4444; }
+    .btn-icon.delete:hover { background: rgba(239,68,68,0.1); }
 
-    .empty i {
-      font-size: 2.5rem;
-      margin-bottom: 0.8rem;
-      opacity: 0.4;
-    }
-
-    .empty p {
+    .status-badge {
+      padding: 0.3rem 0.7rem;
+      border-radius: 2rem;
+      font-size: 0.8rem;
       font-weight: 600;
     }
+    .status-announced { background: #DBEAFE; color: #1E40AF; }
+    .status-published { background: #D1FAE5; color: #065F46; }
+    .status-preparing { background: #FEF3C7; color: #92400E; }
 
-    /* Modal */
+    .search-form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.8rem;
+      margin-bottom: 1.2rem;
+    }
+    .search-form input, .search-form select {
+      padding: 0.6rem 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      outline: none;
+      background: var(--surface);
+    }
+
     .modal-overlay {
       position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(6px);
-      display: flex;
-      align-items: center;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      display: none;
       justify-content: center;
+      align-items: center;
       z-index: 1000;
-      padding: 1rem;
-      opacity: 0;
-      visibility: hidden;
-      transition: var(--transition);
     }
-
-    .modal-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
+    .modal-overlay.active { display: flex; }
     .modal {
       background: var(--surface);
-      border-radius: var(--radius-xl);
-      width: 100%;
-      max-width: 480px;
+      border-radius: var(--radius-lg);
+      width: 90%;
+      max-width: 600px;
+      padding: 1.8rem;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+      animation: modalPop 0.3s ease;
       max-height: 90vh;
       overflow-y: auto;
-      padding: clamp(1.2rem, 3vw, 1.8rem);
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-      transform: translateY(20px);
-      transition: var(--transition);
     }
-
-    .modal-overlay.active .modal {
-      transform: translateY(0);
-    }
-
-    .modal h3 {
-      font-size: 1.1rem;
-      margin-bottom: 1.3rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--primary);
-    }
-
-    .form-group {
-      margin-bottom: 1rem;
-    }
-
-    .form-group label {
-      display: block;
-      font-weight: 600;
-      font-size: 0.85rem;
-      margin-bottom: 0.3rem;
-      color: var(--text-secondary);
-    }
-
-    .form-group input,
-    .form-group input[list] {
-      width: 100%;
+    @keyframes modalPop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal h3 { margin-bottom: 1.5rem; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
+    .form-grid { display: flex; flex-direction: column; gap: 1rem; }
+    .input-group { display: flex; flex-direction: column; gap: 0.3rem; }
+    .input-group label { font-weight: 600; font-size: 0.9rem; color: var(--text-secondary); }
+    .input-group input, .input-group select {
       padding: 0.7rem 1rem;
-      border: 1.5px solid var(--border);
+      border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      font-size: 0.95rem;
-      transition: var(--transition);
-      background: var(--bg);
-      font-family: inherit;
-    }
-
-    .form-group input:focus {
+      font-size: 1rem;
       outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
-      background: white;
+      background: var(--surface);
     }
+    .modal-actions { display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: flex-end; }
 
-    .modal-footer {
-      display: flex;
-      gap: 0.8rem;
-      justify-content: flex-end;
-      margin-top: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: 1.5rem;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: #1E293B;
-      color: white;
-      padding: 0.8rem 1.5rem;
-      border-radius: 2rem;
-      font-weight: 600;
-      font-size: 0.9rem;
-      z-index: 2000;
-      transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .toast.error {
-      background: var(--danger);
-    }
-
-    /* Loader */
-    .spinner {
-      display: inline-block;
-      width: 1rem;
-      height: 1rem;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* Responsive */
-    @media (max-width: 600px) {
-      .btn {
-        padding: 0.6rem 1rem;
-        font-size: 0.85rem;
-      }
-
-      .card-header {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .card-header .btn {
-        justify-content: center;
-      }
-
-      th, td {
-        padding: 0.6rem 0.4rem;
-      }
-
-      .modal {
-        margin: 0.5rem;
-        border-radius: var(--radius-lg);
-      }
-    }
-
-    @media (max-width: 380px) {
-      .tab {
-        padding: 0.6rem 0.8rem;
-        font-size: 0.8rem;
-        gap: 0.3rem;
-      }
-
-      table {
-        font-size: 0.75rem;
-      }
+    @media (max-width: 768px) {
+      td, th { padding: 0.6rem; font-size: 0.85rem; }
+      .btn-icon { padding: 0.2rem; }
+      .card-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+      .btn-action { width: 100%; justify-content: center; }
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <!-- Header -->
-  <div class="header">
-    <h1>DASH <span>SOKOON</span></h1>
-    <div class="date-badge">
-      <i class="far fa-calendar-alt"></i>
-      <span id="dateDisplay"></span>
+<div class="admin-wrapper">
+  <div class="admin-header">
+    <h1>DASH <span>SOKOON</span> ADMIN</h1>
+    <div class="header-btns">
+      <button class="btn btn-outline btn-sm" onclick="openDoctorSearchModal()">
+        <i class="fas fa-stethoscope"></i> بحث عن دكتور
+      </button>
+      <button class="btn btn-outline btn-sm" onclick="openStaffListModal()">
+        <i class="fas fa-user-shield"></i> الموظفين
+      </button>
     </div>
   </div>
 
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab active" data-tab="staff-tab">
-      <i class="fas fa-user-shield"></i> الموظفين
-    </button>
-    <button class="tab" data-tab="books-tab">
-      <i class="fas fa-book"></i> الكتب
-    </button>
-  </div>
-
-  <!-- Staff Tab -->
-  <div id="staff-tab" class="tab-content active">
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title"><i class="fas fa-users"></i> إدارة الموظفين</div>
-        <button class="btn btn-action" onclick="openModal('staff')">
-          <i class="fas fa-plus"></i> إضافة موظف
-        </button>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>الاسم</th>
-              <th>اسم المستخدم</th>
-              <th>كلمة المرور</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="staffTableBody">
-            <tr class="empty"><td colspan="4"><i class="fas fa-inbox"></i><p>جاري التحميل...</p></td></tr>
-          </tbody>
-        </table>
-      </div>
+  <!-- بطاقة البحث عن طالب -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-search"></i> بحث عن طالب</div>
+    <div class="search-form">
+      <input type="text" id="searchName" placeholder="اسم الطالب">
+      <input type="text" id="searchCollege" placeholder="الكلية">
+      <input type="text" id="searchDept" placeholder="القسم">
+      <select id="searchGrade">
+        <option value="">كل الفرق</option>
+        <option value="الأولى">الأولى</option>
+        <option value="الثانية">الثانية</option>
+        <option value="الثالثة">الثالثة</option>
+        <option value="الرابعة">الرابعة</option>
+      </select>
+      <button class="btn btn-primary" onclick="searchStudent()">
+        <i class="fas fa-search"></i> بحث
+      </button>
     </div>
+    <div class="table-wrapper" id="searchResults" style="display: none;"></div>
   </div>
 
-  <!-- Books Tab -->
-  <div id="books-tab" class="tab-content">
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title"><i class="fas fa-book-open"></i> إدارة الكتب</div>
-        <button class="btn btn-action" onclick="openModal('book')">
-          <i class="fas fa-plus"></i> إضافة كتاب
-        </button>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>الدكتور</th>
-              <th>المادة</th>
-              <th>الكلية/القسم</th>
-              <th>السعر</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="booksTableBody">
-            <tr class="empty"><td colspan="5"><i class="fas fa-inbox"></i><p>جاري التحميل...</p></td></tr>
-          </tbody>
-        </table>
-      </div>
+  <!-- صفحة إدارة الكتب -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><i class="fas fa-book-open"></i> إدارة الكتب</div>
+      <button class="btn btn-action" onclick="openBookModal()"><i class="fas fa-plus"></i> إضافة كتاب</button>
+    </div>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>الدكتور</th>
+            <th>المادة</th>
+            <th>الكلية/القسم</th>
+            <th>الفرقة</th>
+            <th>السعر</th>
+            <th>الحالة</th>
+            <th>إجراءات</th>
+          </tr>
+        </thead>
+        <tbody id="booksTableBody"></tbody>
+      </table>
     </div>
   </div>
 </div>
 
-<!-- Staff Modal -->
+<!-- مودال قائمة الموظفين -->
+<div class="modal-overlay" id="staffListModal">
+  <div class="modal">
+    <h3><i class="fas fa-users"></i> إدارة الموظفين</h3>
+    <div class="table-wrapper" style="margin-bottom: 1rem;">
+      <table>
+        <thead><tr><th>الاسم</th><th>اسم المستخدم</th><th>كلمة المرور</th><th>إجراءات</th></tr></thead>
+        <tbody id="staffListTableBody"></tbody>
+      </table>
+    </div>
+    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+      <button class="btn btn-outline" onclick="closeModal('staffListModal')">إغلاق</button>
+      <button class="btn btn-action" onclick="openStaffModal()"><i class="fas fa-plus"></i> إضافة موظف</button>
+    </div>
+  </div>
+</div>
+
+<!-- مودال إضافة/تعديل موظف -->
 <div class="modal-overlay" id="staffModal">
   <div class="modal">
-    <h3 id="staffModalTitle"><i class="fas fa-user-plus"></i> إضافة موظف</h3>
-    <input type="hidden" id="staffId">
-    <div class="form-group">
-      <label>الاسم الكامل</label>
-      <input type="text" id="staffName" placeholder="أدخل الاسم الثلاثي">
+    <h3 id="staffModalTitle"><i class="fas fa-user-plus"></i> إضافة موظف جديد</h3>
+    <div class="form-grid">
+      <input type="hidden" id="staffEditId">
+      <div class="input-group"><label>الاسم</label><input type="text" id="staffName" placeholder="الاسم ثلاثي"></div>
+      <div class="input-group"><label>اسم المستخدم</label><input type="text" id="staffUser" placeholder="اسم الدخول"></div>
+      <div class="input-group"><label>كلمة المرور</label><input type="password" id="staffPass" placeholder="******"></div>
     </div>
-    <div class="form-group">
-      <label>اسم المستخدم</label>
-      <input type="text" id="staffUser" placeholder="اسم الدخول للنظام">
-    </div>
-    <div class="form-group">
-      <label>كلمة المرور</label>
-      <input type="password" id="staffPass" placeholder="••••••••">
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeModal('staff')">إلغاء</button>
-      <button class="btn btn-primary" id="staffSaveBtn" onclick="saveStaff()">
-        <i class="fas fa-save"></i> حفظ
-      </button>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('staffModal')">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveStaff()">حفظ</button>
     </div>
   </div>
 </div>
 
-<!-- Book Modal -->
+<!-- مودال إضافة/تعديل كتاب -->
 <div class="modal-overlay" id="bookModal">
   <div class="modal">
-    <h3 id="bookModalTitle"><i class="fas fa-plus-circle"></i> إضافة كتاب</h3>
-    <input type="hidden" id="bookId">
-    <div class="form-group">
-      <label>اسم الدكتور</label>
-      <input type="text" id="docName" placeholder="د. أحمد فوزي">
+    <h3 id="bookModalTitle"><i class="fas fa-plus-circle"></i> إضافة كتاب جديد</h3>
+    <div class="form-grid">
+      <input type="hidden" id="bookEditId">
+      <div class="input-group"><label>الدكتور</label><input type="text" id="docName" placeholder="د. أحمد فوزي"></div>
+      <div class="input-group"><label>المادة</label><input type="text" id="bookTitle" placeholder="محاسبة مالية"></div>
+      <div class="input-group">
+        <label>الكلية (اختر أو اكتب)</label>
+        <input list="colleges-list" id="collegeInput" placeholder="اختر الكلية">
+        <datalist id="colleges-list"></datalist>
+      </div>
+      <div class="input-group">
+        <label>القسم (اختر أو اكتب)</label>
+        <input list="depts-list" id="deptInput" placeholder="اختر القسم">
+        <datalist id="depts-list"></datalist>
+      </div>
+      <div class="input-group">
+        <label>الفرقة الدراسية</label>
+        <select id="gradeSelect">
+          <option value="">-- اختر الفرقة --</option>
+          <option value="الأولى">الأولى</option>
+          <option value="الثانية">الثانية</option>
+          <option value="الثالثة">الثالثة</option>
+          <option value="الرابعة">الرابعة</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>السعر</label>
+        <input type="number" id="bookPrice" placeholder="0.00">
+      </div>
+      <div class="input-group">
+        <label>حالة الكتاب</label>
+        <select id="statusSelect">
+          <option value="تم الإعلان">📢 تم الإعلان</option>
+          <option value="تم النشر">✅ تم النشر</option>
+          <option value="قيد التجهيز">⏳ قيد التجهيز</option>
+        </select>
+      </div>
     </div>
-    <div class="form-group">
-      <label>المادة</label>
-      <input type="text" id="bookTitle" placeholder="اسم المادة الدراسية">
-    </div>
-    <div class="form-group">
-      <label>الكلية</label>
-      <input list="collegesList" id="collegeInput" placeholder="اختر أو اكتب اسم الكلية">
-      <datalist id="collegesList"></datalist>
-    </div>
-    <div class="form-group">
-      <label>القسم</label>
-      <input list="deptsList" id="deptInput" placeholder="اختر أو اكتب اسم القسم">
-      <datalist id="deptsList"></datalist>
-    </div>
-    <div class="form-group">
-      <label>السعر (ج.م)</label>
-      <input type="number" id="bookPrice" placeholder="0.00" step="0.01" min="0">
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeModal('book')">إلغاء</button>
-      <button class="btn btn-primary" id="bookSaveBtn" onclick="saveBook()">
-        <i class="fas fa-save"></i> حفظ
-      </button>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('bookModal')">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveBook()">حفظ</button>
     </div>
   </div>
 </div>
 
-<!-- Toast -->
-<div class="toast" id="toast"></div>
+<!-- مودال البحث عن دكتور -->
+<div class="modal-overlay" id="doctorSearchModal">
+  <div class="modal">
+    <h3><i class="fas fa-stethoscope"></i> بحث عن دكتور</h3>
+    <div class="input-group" style="margin-bottom: 1rem;">
+      <label>اسم الدكتور</label>
+      <input type="text" id="doctorSearchInput" placeholder="اكتب اسم الدكتور كامل أو جزء منه">
+    </div>
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+      <button class="btn btn-primary" onclick="searchDoctor()"><i class="fas fa-search"></i> بحث</button>
+      <button class="btn btn-outline" onclick="closeModal('doctorSearchModal')">إغلاق</button>
+    </div>
+    <div id="doctorSearchResults">
+      <!-- النتائج تظهر هنا -->
+    </div>
+  </div>
+</div>
 
-<!-- Firebase SDK -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getDatabase, ref, set, push, update, remove, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-  // ========== إعداد Firebase ==========
-  const firebaseConfig = {
-    apiKey: "AIzaSyB1iGYl3_VuVAOyVexQsg3rKTDt0OZMRSk",
-    authDomain: "dagd-9b228.firebaseapp.com",
-    databaseURL: "https://dagd-9b228-default-rtdb.firebaseio.com",
-    projectId: "dagd-9b228",
-    storageBucket: "dagd-9b228.firebasestorage.app",
-    messagingSenderId: "299664084614",
-    appId: "1:299664084614:web:39df93bcbde273c4d84307",
-    measurementId: "G-52C4B7Q2YQ"
+<script>
+  // البيانات
+  let staffList = JSON.parse(localStorage.getItem('sokoon_staff')) || [];
+  let booksList = JSON.parse(localStorage.getItem('sokoon_books')) || [];
+  let dynamicData = JSON.parse(localStorage.getItem('sokoon_config')) || {
+    colleges: ['هندسة', 'تجارة', 'حاسبات'],
+    depts: ['عام', 'كهرباء', 'محاسبة', 'مدني']
   };
+  const RESERVATIONS_KEY = 'dash_sokoon_v3';
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  // ========== المتغيرات العامة ==========
-  let staffData = [];
-  let booksData = [];
-  let dynamicLists = { colleges: [], depts: [] };
-
-  // ========== عناصر DOM ==========
-  const staffTableBody = document.getElementById('staffTableBody');
-  const booksTableBody = document.getElementById('booksTableBody');
-  const toast = document.getElementById('toast');
-  let toastTimer;
-
-  // ========== دوال مساعدة ==========
-  function showToast(msg, isError = false) {
-    clearTimeout(toastTimer);
-    toast.textContent = msg;
-    toast.className = 'toast' + (isError ? ' error' : '');
-    toast.classList.add('show');
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+  function updateDatalists() {
+    const cList = document.getElementById('colleges-list');
+    const dList = document.getElementById('depts-list');
+    if (cList) cList.innerHTML = dynamicData.colleges.map(c => `<option value="${c}">`).join('');
+    if (dList) dList.innerHTML = dynamicData.depts.map(d => `<option value="${d}">`).join('');
   }
 
-  function showLoading(tableBody, colspan) {
-    tableBody.innerHTML = `<tr class="empty"><td colspan="${colspan}"><div class="spinner" style="border-color: rgba(79,70,229,0.3); border-top-color: #4F46E5; width: 1.5rem; height: 1.5rem;"></div><p>جاري التحميل...</p></td></tr>`;
+  function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
   }
 
-  function showEmpty(tableBody, colspan, icon, msg) {
-    tableBody.innerHTML = `<tr class="empty"><td colspan="${colspan}"><i class="fas ${icon}"></i><p>${msg}</p></td></tr>`;
+  // ---------- البحث عن دكتور ----------
+  function openDoctorSearchModal() {
+    document.getElementById('doctorSearchInput').value = '';
+    document.getElementById('doctorSearchResults').innerHTML = '';
+    document.getElementById('doctorSearchModal').classList.add('active');
   }
 
-  // ========== التاريخ ==========
-  function updateDate() {
-    const d = new Date();
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    document.getElementById('dateDisplay').textContent = d.toLocaleDateString('ar-EG', options);
-  }
-  updateDate();
-
-  // ========== التبويبات ==========
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', function() {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      this.classList.add('active');
-      document.getElementById(this.dataset.tab).classList.add('active');
-    });
-  });
-
-  // ========== المودال ==========
-  function openModal(type, id = null) {
-    const modal = document.getElementById(type + 'Modal');
-    const title = document.getElementById(type + 'ModalTitle');
-    
-    if (type === 'staff') {
-      document.getElementById('staffId').value = '';
-      document.getElementById('staffName').value = '';
-      document.getElementById('staffUser').value = '';
-      document.getElementById('staffPass').value = '';
-      title.innerHTML = '<i class="fas fa-user-plus"></i> إضافة موظف';
-      
-      if (id) {
-        const item = staffData.find(s => s.id === id);
-        if (item) {
-          document.getElementById('staffId').value = item.id;
-          document.getElementById('staffName').value = item.name;
-          document.getElementById('staffUser').value = item.username;
-          document.getElementById('staffPass').value = item.password;
-          title.innerHTML = '<i class="fas fa-user-edit"></i> تعديل موظف';
-        }
-      }
-    } else {
-      document.getElementById('bookId').value = '';
-      document.getElementById('docName').value = '';
-      document.getElementById('bookTitle').value = '';
-      document.getElementById('collegeInput').value = '';
-      document.getElementById('deptInput').value = '';
-      document.getElementById('bookPrice').value = '';
-      title.innerHTML = '<i class="fas fa-plus-circle"></i> إضافة كتاب';
-      updateDatalists();
-      
-      if (id) {
-        const item = booksData.find(b => b.id === id);
-        if (item) {
-          document.getElementById('bookId').value = item.id;
-          document.getElementById('docName').value = item.doc;
-          document.getElementById('bookTitle').value = item.title;
-          document.getElementById('collegeInput').value = item.college;
-          document.getElementById('deptInput').value = item.dept || '';
-          document.getElementById('bookPrice').value = item.price;
-          title.innerHTML = '<i class="fas fa-edit"></i> تعديل كتاب';
-        }
-      }
-    }
-    
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeModal(type) {
-    document.getElementById(type + 'Modal').classList.remove('active');
-    document.body.style.overflow = '';
-  }
-
-  // إغلاق المودال بالنقر خارجه
-  document.querySelectorAll('.modal-overlay').forEach(overlay => {
-    overlay.addEventListener('click', function(e) {
-      if (e.target === this) {
-        this.classList.remove('active');
-        document.body.style.overflow = '';
-      }
-    });
-  });
-
-  // ========== Firebase: الموظفين ==========
-  const staffRef = ref(db, 'staff');
-
-  function loadStaff() {
-    showLoading(staffTableBody, 4);
-    
-    onValue(staffRef, (snapshot) => {
-      staffData = [];
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        staffData = Object.keys(data).map(key => ({
-          id: key,
-          ...data[key]
-        }));
-        renderStaff();
-      } else {
-        showEmpty(staffTableBody, 4, 'fa-user-slash', 'لا يوجد موظفين حتى الآن');
-      }
-    }, (error) => {
-      showToast('فشل تحميل بيانات الموظفين', true);
-      showEmpty(staffTableBody, 4, 'fa-exclamation-circle', 'خطأ في التحميل');
-    });
-  }
-
-  function renderStaff() {
-    if (staffData.length === 0) {
-      showEmpty(staffTableBody, 4, 'fa-user-slash', 'لا يوجد موظفين حتى الآن');
+  function searchDoctor() {
+    const searchTerm = document.getElementById('doctorSearchInput').value.trim().toLowerCase();
+    const resultsDiv = document.getElementById('doctorSearchResults');
+    if (!searchTerm) {
+      resultsDiv.innerHTML = '<p style="text-align:center">الرجاء كتابة اسم الدكتور</p>';
       return;
     }
-    
-    staffTableBody.innerHTML = staffData.map(s => `
+
+    const reservations = JSON.parse(localStorage.getItem(RESERVATIONS_KEY)) || [];
+    const filtered = reservations.filter(r => r.doctor.toLowerCase().includes(searchTerm));
+
+    if (filtered.length === 0) {
+      resultsDiv.innerHTML = '<p style="text-align:center">لا توجد حجوزات لهذا الدكتور</p>';
+      return;
+    }
+
+    // تجميع حسب الطالب (نفس الـ phone)
+    const studentsMap = {};
+    filtered.forEach(r => {
+      const key = r.phone;
+      if (!studentsMap[key]) {
+        studentsMap[key] = {
+          name: r.studentName,
+          phone: r.phone,
+          books: [],
+          totalForStudent: 0
+        };
+      }
+      studentsMap[key].books.push(r);
+      studentsMap[key].totalForStudent += r.price;
+    });
+
+    let totalRevenue = 0;
+    const students = Object.values(studentsMap);
+    students.forEach(s => totalRevenue += s.totalForStudent);
+
+    let html = `<div class="table-wrapper"><table>
+      <thead><tr><th>الطالب</th><th>الهاتف</th><th>الكتب المحجوزة</th><th>المبلغ (ج)</th></tr></thead>
+      <tbody>`;
+    students.forEach(s => {
+      const booksList = s.books.map(b => `${b.book} (${b.price} ج)`).join('، ');
+      html += `<tr>
+        <td>${s.name}</td>
+        <td>${s.phone}</td>
+        <td>${booksList}</td>
+        <td class="price-tag">${s.totalForStudent} ج</td>
+      </tr>`;
+    });
+    html += `</tbody></table></div>
+      <div style="text-align:left; margin-top:1rem; font-weight:800; font-size:1.2rem; color:var(--primary);">
+        الإجمالي الكلي: ${totalRevenue} ج
+      </div>`;
+    resultsDiv.innerHTML = html;
+  }
+
+  // ---------- البحث عن طالب ----------
+  function searchStudent() {
+    const name = document.getElementById('searchName').value.trim().toLowerCase();
+    const college = document.getElementById('searchCollege').value.trim().toLowerCase();
+    const dept = document.getElementById('searchDept').value.trim().toLowerCase();
+    const grade = document.getElementById('searchGrade').value;
+
+    const reservations = JSON.parse(localStorage.getItem(RESERVATIONS_KEY)) || [];
+    const resultsContainer = document.getElementById('searchResults');
+    resultsContainer.innerHTML = '';
+    resultsContainer.style.display = 'none';
+
+    if (!name && !college && !dept && !grade) {
+      resultsContainer.style.display = 'block';
+      resultsContainer.innerHTML = '<p style="text-align:center; padding:1rem;">الرجاء إدخال معيار واحد على الأقل</p>';
+      return;
+    }
+
+    const filtered = reservations.filter(r => {
+      const matchName = !name || r.studentName.toLowerCase().includes(name);
+      const matchCollege = !college || r.college.toLowerCase().includes(college);
+      const matchDept = !dept || (r.department || '').toLowerCase().includes(dept);
+      const matchGrade = !grade || r.grade === grade;
+      return matchName && matchCollege && matchDept && matchGrade;
+    });
+
+    if (filtered.length === 0) {
+      resultsContainer.style.display = 'block';
+      resultsContainer.innerHTML = '<p style="text-align:center; padding:1rem;">لا توجد نتائج</p>';
+      return;
+    }
+
+    const grouped = {};
+    filtered.forEach(r => {
+      const key = r.phone;
+      if (!grouped[key]) {
+        grouped[key] = {
+          name: r.studentName,
+          phone: r.phone,
+          college: r.college,
+          department: r.department,
+          grade: r.grade,
+          books: []
+        };
+      }
+      grouped[key].books.push(r);
+    });
+
+    let html = '';
+    Object.values(grouped).forEach(student => {
+      html += `
+        <div style="margin-bottom: 1.5rem; border-bottom: 2px solid var(--border); padding-bottom: 1rem;">
+          <strong>${student.name}</strong> - ${student.phone}<br>
+          <small>${student.college} | ${student.department} | ${student.grade}</small>
+          <table style="width:100%; margin-top:0.5rem;">
+            <thead><tr><th>الكتاب</th><th>الدكتور</th><th>السعر</th><th>الحالة</th></tr></thead>
+            <tbody>
+              ${student.books.map(b => `
+                <tr>
+                  <td>${b.book}</td>
+                  <td>${b.doctor}</td>
+                  <td>${b.price} ج</td>
+                  <td><span class="status-badge ${b.received ? 'status-published' : 'status-preparing'}">${b.received ? '✅ تم' : '⏳ انتظار'}</span></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    });
+    resultsContainer.style.display = 'block';
+    resultsContainer.innerHTML = html;
+  }
+
+  // ---------- الموظفين ----------
+  function renderStaffList() {
+    const tbody = document.getElementById('staffListTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = staffList.map(s => `
       <tr>
-        <td>${escapeHtml(s.name)}</td>
-        <td>${escapeHtml(s.username)}</td>
+        <td>${s.name}</td>
+        <td>${s.username}</td>
         <td>••••••</td>
-        <td>
-          <div class="actions">
-            <button class="btn-icon edit" onclick="window.editStaff('${s.id}')" title="تعديل">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button class="btn-icon delete" onclick="window.deleteStaff('${s.id}')" title="حذف">
-              <i class="fas fa-trash"></i>
-            </button>
-          </div>
+        <td class="actions">
+          <button class="btn-icon edit" onclick="editStaff(${s.id})"><i class="fas fa-edit"></i></button>
+          <button class="btn-icon delete" onclick="deleteStaff(${s.id})"><i class="fas fa-trash"></i></button>
         </td>
       </tr>
     `).join('');
   }
 
-  async function saveStaff() {
-    const id = document.getElementById('staffId').value;
+  function openStaffListModal() {
+    renderStaffList();
+    document.getElementById('staffListModal').classList.add('active');
+  }
+
+  function openStaffModal(id = null) {
+    document.getElementById('staffEditId').value = '';
+    document.getElementById('staffName').value = '';
+    document.getElementById('staffUser').value = '';
+    document.getElementById('staffPass').value = '';
+    document.getElementById('staffModalTitle').innerHTML = '<i class="fas fa-user-plus"></i> إضافة موظف جديد';
+    if (id) {
+      const s = staffList.find(x => x.id === id);
+      if (s) {
+        document.getElementById('staffEditId').value = s.id;
+        document.getElementById('staffName').value = s.name;
+        document.getElementById('staffUser').value = s.username;
+        document.getElementById('staffPass').value = s.password;
+        document.getElementById('staffModalTitle').innerHTML = '<i class="fas fa-user-edit"></i> تعديل بيانات الموظف';
+      }
+    }
+    document.getElementById('staffModal').classList.add('active');
+  }
+
+  function saveStaff() {
+    const id = document.getElementById('staffEditId').value;
     const name = document.getElementById('staffName').value.trim();
     const username = document.getElementById('staffUser').value.trim();
     const password = document.getElementById('staffPass').value.trim();
-    
-    if (!name || !username || !password) {
-      showToast('الرجاء ملء جميع الحقول', true);
-      return;
+    if (!name || !username || !password) return alert('الرجاء ملء جميع الحقول');
+
+    if (id) {
+      const index = staffList.findIndex(s => s.id == id);
+      if (index !== -1) staffList[index] = { ...staffList[index], name, username, password };
+    } else {
+      staffList.push({ id: Date.now(), name, username, password });
     }
+    localStorage.setItem('sokoon_staff', JSON.stringify(staffList));
+    closeModal('staffModal');
+    renderStaffList();
+  }
 
-    const btn = document.getElementById('staffSaveBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> جاري الحفظ...';
+  function editStaff(id) { openStaffModal(id); }
 
-    const staffObj = { name, username, password };
-
-    try {
-      if (id) {
-        await update(ref(db, `staff/${id}`), staffObj);
-        showToast('تم تعديل الموظف بنجاح ✅');
-      } else {
-        await push(staffRef, staffObj);
-        showToast('تم إضافة الموظف بنجاح ✅');
-      }
-      closeModal('staff');
-    } catch (error) {
-      showToast('حدث خطأ أثناء الحفظ', true);
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-save"></i> حفظ';
+  function deleteStaff(id) {
+    if (confirm('حذف هذا الموظف؟')) {
+      staffList = staffList.filter(s => s.id !== id);
+      localStorage.setItem('sokoon_staff', JSON.stringify(staffList));
+      renderStaffList();
     }
   }
 
-  window.editStaff = function(id) {
-    openModal('staff', id);
-  };
-
-  window.deleteStaff = async function(id) {
-    if (!confirm('هل أنت متأكد من حذف هذا الموظف؟')) return;
-    
-    try {
-      await remove(ref(db, `staff/${id}`));
-      showToast('تم حذف الموظف بنجاح 🗑️');
-    } catch (error) {
-      showToast('فشل حذف الموظف', true);
-    }
-  };
-
-  // ========== Firebase: الكتب ==========
-  const booksRef = ref(db, 'books');
-
-  function loadBooks() {
-    showLoading(booksTableBody, 5);
-    
-    onValue(booksRef, (snapshot) => {
-      booksData = [];
-      dynamicLists = { colleges: [], depts: [] };
-      
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        booksData = Object.keys(data).map(key => ({
-          id: key,
-          ...data[key]
-        }));
-        
-        // جمع الكليات والأقسام
-        booksData.forEach(b => {
-          if (b.college && !dynamicLists.colleges.includes(b.college)) {
-            dynamicLists.colleges.push(b.college);
-          }
-          if (b.dept && !dynamicLists.depts.includes(b.dept)) {
-            dynamicLists.depts.push(b.dept);
-          }
-        });
-        
-        renderBooks();
-      } else {
-        showEmpty(booksTableBody, 5, 'fa-book-open', 'لا يوجد كتب حتى الآن');
-      }
-      updateDatalists();
-    }, (error) => {
-      showToast('فشل تحميل بيانات الكتب', true);
-      showEmpty(booksTableBody, 5, 'fa-exclamation-circle', 'خطأ في التحميل');
-    });
-  }
-
+  // ---------- الكتب ----------
   function renderBooks() {
-    if (booksData.length === 0) {
-      showEmpty(booksTableBody, 5, 'fa-book-open', 'لا يوجد كتب حتى الآن');
-      return;
-    }
-    
-    booksTableBody.innerHTML = booksData.map(b => `
+    const tbody = document.getElementById('booksTableBody');
+    tbody.innerHTML = booksList.map(b => `
       <tr>
-        <td>${escapeHtml(b.doc)}</td>
-        <td>${escapeHtml(b.title)}</td>
-        <td>${escapeHtml(b.college)}${b.dept ? ' - ' + escapeHtml(b.dept) : ''}</td>
-        <td class="price">${Number(b.price).toFixed(2)} ج</td>
-        <td>
-          <div class="actions">
-            <button class="btn-icon edit" onclick="window.editBook('${b.id}')" title="تعديل">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button class="btn-icon delete" onclick="window.deleteBook('${b.id}')" title="حذف">
-              <i class="fas fa-trash"></i>
-            </button>
-          </div>
+        <td>${b.doc}</td>
+        <td>${b.title}</td>
+        <td>${b.college} - ${b.dept}</td>
+        <td>${b.grade || '—'}</td>
+        <td class="price-tag">${b.price} ج</td>
+        <td><span class="status-badge ${getStatusClass(b.status)}">${b.status || '—'}</span></td>
+        <td class="actions">
+          <button class="btn-icon edit" onclick="editBook(${b.id})"><i class="fas fa-edit"></i></button>
+          <button class="btn-icon delete" onclick="deleteBook(${b.id})"><i class="fas fa-trash"></i></button>
         </td>
       </tr>
     `).join('');
   }
 
-  function updateDatalists() {
-    document.getElementById('collegesList').innerHTML = dynamicLists.colleges.map(c => `<option value="${escapeHtml(c)}">`).join('');
-    document.getElementById('deptsList').innerHTML = dynamicLists.depts.map(d => `<option value="${escapeHtml(d)}">`).join('');
+  function getStatusClass(status) {
+    if (status === 'تم الإعلان') return 'status-announced';
+    if (status === 'تم النشر') return 'status-published';
+    if (status === 'قيد التجهيز') return 'status-preparing';
+    return '';
   }
 
-  async function saveBook() {
-    const id = document.getElementById('bookId').value;
+  function openBookModal(id = null) {
+    updateDatalists();
+    document.getElementById('bookEditId').value = '';
+    document.getElementById('docName').value = '';
+    document.getElementById('bookTitle').value = '';
+    document.getElementById('collegeInput').value = '';
+    document.getElementById('deptInput').value = '';
+    document.getElementById('gradeSelect').value = '';
+    document.getElementById('bookPrice').value = '';
+    document.getElementById('statusSelect').value = 'تم الإعلان';
+    document.getElementById('bookModalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> إضافة كتاب جديد';
+    if (id) {
+      const b = booksList.find(x => x.id === id);
+      if (b) {
+        document.getElementById('bookEditId').value = b.id;
+        document.getElementById('docName').value = b.doc;
+        document.getElementById('bookTitle').value = b.title;
+        document.getElementById('collegeInput').value = b.college;
+        document.getElementById('deptInput').value = b.dept;
+        document.getElementById('gradeSelect').value = b.grade || '';
+        document.getElementById('bookPrice').value = b.price;
+        document.getElementById('statusSelect').value = b.status || 'تم الإعلان';
+        document.getElementById('bookModalTitle').innerHTML = '<i class="fas fa-edit"></i> تعديل بيانات الكتاب';
+      }
+    }
+    document.getElementById('bookModal').classList.add('active');
+  }
+
+  function saveBook() {
+    const id = document.getElementById('bookEditId').value;
     const doc = document.getElementById('docName').value.trim();
     const title = document.getElementById('bookTitle').value.trim();
     const college = document.getElementById('collegeInput').value.trim();
     const dept = document.getElementById('deptInput').value.trim();
+    const grade = document.getElementById('gradeSelect').value;
     const price = document.getElementById('bookPrice').value.trim();
-    
-    if (!doc || !title || !college || !price) {
-      showToast('الرجاء ملء جميع الحقول المطلوبة', true);
-      return;
+    const status = document.getElementById('statusSelect').value;
+    if (!doc || !title || !college || !price) return alert('الرجاء ملء الحقول المطلوبة');
+    if (!grade) return alert('الرجاء اختيار الفرقة الدراسية');
+    if (college && !dynamicData.colleges.includes(college)) dynamicData.colleges.push(college);
+    if (dept && !dynamicData.depts.includes(dept)) dynamicData.depts.push(dept);
+    localStorage.setItem('sokoon_config', JSON.stringify(dynamicData));
+    const bookData = { doc, title, college, dept, grade, price: Number(price), status };
+    if (id) {
+      const index = booksList.findIndex(b => b.id == id);
+      if (index !== -1) booksList[index] = { ...booksList[index], ...bookData };
+    } else {
+      booksList.push({ id: Date.now(), ...bookData });
     }
+    localStorage.setItem('sokoon_books', JSON.stringify(booksList));
+    closeModal('bookModal');
+    renderBooks();
+  }
 
-    if (isNaN(price) || Number(price) < 0) {
-      showToast('السعر غير صحيح', true);
-      return;
-    }
+  function editBook(id) { openBookModal(id); }
 
-    const btn = document.getElementById('bookSaveBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> جاري الحفظ...';
-
-    const bookObj = {
-      doc,
-      title,
-      college,
-      dept: dept || '',
-      price: Number(price)
-    };
-
-    try {
-      if (id) {
-        await update(ref(db, `books/${id}`), bookObj);
-        showToast('تم تعديل الكتاب بنجاح ✅');
-      } else {
-        await push(booksRef, bookObj);
-        showToast('تم إضافة الكتاب بنجاح ✅');
-      }
-      closeModal('book');
-    } catch (error) {
-      showToast('حدث خطأ أثناء الحفظ', true);
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-save"></i> حفظ';
+  function deleteBook(id) {
+    if (confirm('حذف الكتاب نهائياً؟')) {
+      booksList = booksList.filter(b => b.id !== id);
+      localStorage.setItem('sokoon_books', JSON.stringify(booksList));
+      renderBooks();
     }
   }
 
-  window.editBook = function(id) {
-    openModal('book', id);
-  };
-
-  window.deleteBook = async function(id) {
-    if (!confirm('هل أنت متأكد من حذف هذا الكتاب؟')) return;
-    
-    try {
-      await remove(ref(db, `books/${id}`));
-      showToast('تم حذف الكتاب بنجاح 🗑️');
-    } catch (error) {
-      showToast('فشل حذف الكتاب', true);
-    }
-  };
-
-  // ========== حماية XSS ==========
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
-  // ========== بدء التشغيل ==========
-  loadStaff();
-  loadBooks();
-
-  // تعريض الدوال للاستخدام العام
-  window.openModal = openModal;
-  window.closeModal = closeModal;
-  window.saveStaff = saveStaff;
-  window.saveBook = saveBook;
+  // بدء التشغيل
+  renderBooks();
+  updateDatalists();
 </script>
-
 </body>
-    </html>
+</html>
