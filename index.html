@@ -1,178 +1,491 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dash Sokoon | جاري التحميل</title>
-  <style>
-    :root {
-      --primary: #4F46E5;
-      --primary-light: #818CF8;
-      --action: #FB923C;
-      --bg: #F8FAFC;
-      --text: #0F172A;
-      --text-secondary: #64748B;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#00AEEF">
+    <title>شفاء · فيديوهات الشرح</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap&subset=arabic" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <style>
+        :root {
+            --primary: #00AEEF;
+            --primary-light: #E0F7FA;
+            --primary-dark: #008080;
+            --bg: #FAFAFA;
+            --white: #FFFFFF;
+            --ink: #1A3C4A;
+            --text-sec: #5A7D8A;
+            --danger: #E57373;
+            --success: #26A69A;
+            --warning: #FFA726;
+            --border: #E0E0E0;
+            --shadow-xs: 0 2px 6px rgba(0,0,0,0.03);
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.05);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 32px rgba(0,0,0,0.1);
+            --radius-xs: 8px;
+            --radius-sm: 14px;
+            --radius-md: 20px;
+            --radius-lg: 26px;
+            --radius-xl: 50px;
+            --safe-bottom: env(safe-area-inset-bottom, 16px);
+        }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    body {
-      background-color: var(--bg);
-      background-image: radial-gradient(circle at 30% 40%, rgba(79,70,229,0.06) 0%, transparent 60%),
-                        radial-gradient(circle at 70% 70%, rgba(251,146,60,0.05) 0%, transparent 60%);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
+        html {
+            font-size: 16px;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-size-adjust: 100%;
+            text-rendering: optimizeSpeed;
+        }
 
-    .container {
-      text-align: center;
-      padding: 2rem;
-    }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 16px;
+            padding-bottom: calc(16px + var(--safe-bottom));
+            overflow-x: hidden;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
 
-    .brand-title {
-      font-size: clamp(2.2rem, 9vw, 3.8rem);
-      font-weight: 900;
-      background: linear-gradient(135deg, var(--primary) 20%, var(--action) 80%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -1px;
-      white-space: nowrap;
-      display: inline-block;
-      margin-bottom: 0.3rem;
-      animation: tracking-in-expand 0.8s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
-      text-shadow: 0 2px 8px rgba(79,70,229,0.1);
-      position: relative;
-    }
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+        }
 
-    .brand-title span {
-      color: var(--action);
-      background: linear-gradient(135deg, var(--action), #F97316);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+        /* ============ الهيدر ============ */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 16px 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
 
-    .subtitle {
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-      font-weight: 500;
-      margin-bottom: 2.5rem;
-      opacity: 0;
-      animation: fadeIn 1s ease forwards 0.6s;
-    }
+        .logo { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            flex-shrink: 0; 
+        }
+        
+        .logo h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #008080, #00AEEF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            white-space: nowrap;
+        }
+        
+        .logo i { 
+            color: var(--primary); 
+            font-size: 1.2rem; 
+        }
 
-    .loader-container {
-      width: 280px;
-      height: 8px;
-      background: #E2E8F0;
-      border-radius: 20px;
-      margin: 0 auto;
-      overflow: hidden;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-    }
+        .header-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-sec);
+            font-weight: 600;
+        }
 
-    .loader-fill {
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, var(--primary), var(--action));
-      border-radius: 20px;
-      box-shadow: 0 0 12px rgba(79, 70, 229, 0.3);
-      animation: progress 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    }
+        /* ============ التبويبات ============ */
+        .tabs-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 6px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
 
-    .status-text {
-      margin-top: 1.2rem;
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      font-weight: 500;
-      opacity: 0;
-      animation: fadeIn 0.5s ease forwards 1s;
-    }
+        .tab-btn {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: var(--radius-xl);
+            background: transparent;
+            color: var(--text-sec);
+            font-family: 'Cairo', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            white-space: nowrap;
+            min-height: 50px;
+            touch-action: manipulation;
+            position: relative;
+        }
 
-    @keyframes tracking-in-expand {
-      0% { letter-spacing: -0.5em; opacity: 0; }
-      40% { opacity: 0.6; }
-      100% { opacity: 1; }
-    }
+        .tab-btn i {
+            font-size: 1.1rem;
+            transition: color 0.2s ease;
+        }
 
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
+        .tab-btn:hover {
+            color: var(--ink);
+            background: #F5FAFC;
+        }
 
-    @keyframes progress {
-      0% { width: 0%; }
-      100% { width: 100%; }
-    }
+        .tab-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            font-weight: 800;
+        }
+        .tab-btn.active i {
+            color: var(--primary);
+        }
+        .tab-btn:active {
+            transform: scale(0.96);
+            opacity: 0.85;
+        }
 
-    .exit-animation {
-      opacity: 0;
-      transform: scale(1.05);
-      transition: all 0.6s ease-in;
-    }
+        /* ============ محتوى الفيديو ============ */
+        .video-container {
+            display: none;
+            animation: fadeSlideIn 0.3s ease forwards;
+        }
+        .video-container.active {
+            display: block;
+        }
 
-    @media (max-width: 400px) {
-      .brand-title {
-        font-size: 1.8rem;
-        letter-spacing: 0;
-      }
-      .loader-container {
-        width: 220px;
-      }
-      .subtitle {
-        font-size: 0.95rem;
-      }
-    }
-  </style>
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .video-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            background: #1A3C4A;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+
+        .video-info {
+            padding: 20px 24px;
+        }
+        .video-info h3 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--ink);
+        }
+        .video-info h3 i {
+            color: var(--primary);
+        }
+        .video-info p {
+            font-size: 0.88rem;
+            color: var(--text-sec);
+            line-height: 1.7;
+        }
+
+        .video-info .tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+        .tag {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 768px) {
+            html { font-size: 15px; }
+            body { padding: 8px; padding-bottom: calc(8px + var(--safe-bottom)); }
+            
+            .app-header { 
+                padding: 12px 16px; 
+                border-radius: var(--radius-md);
+                margin-bottom: 14px;
+            }
+            
+            .logo h2 { font-size: 1.2rem; }
+            
+            .tabs-container { 
+                flex-direction: row; 
+                gap: 4px; 
+                padding: 4px; 
+                margin-bottom: 14px;
+            }
+            
+            .tab-btn { 
+                padding: 12px 14px; 
+                font-size: 0.82rem; 
+                min-height: 44px; 
+                border-radius: 18px;
+                gap: 6px;
+            }
+            
+            .tab-btn i { font-size: 1rem; }
+            
+            .video-info { padding: 14px 16px; }
+            .video-info h3 { font-size: 1rem; }
+        }
+
+        @media (max-width: 400px) {
+            html { font-size: 14px; }
+            body { padding: 6px; padding-bottom: calc(6px + var(--safe-bottom)); }
+            
+            .app-header { padding: 10px 14px; border-radius: 20px; }
+            .logo h2 { font-size: 1.1rem; }
+            
+            .tabs-container { flex-direction: column; gap: 4px; padding: 4px; }
+            .tab-btn { padding: 10px 14px; font-size: 0.8rem; min-height: 44px; }
+            .tab-btn i { font-size: 0.9rem; }
+            
+            .video-info { padding: 12px 14px; }
+            .video-info h3 { font-size: 0.9rem; }
+            .video-info p { font-size: 0.82rem; }
+            
+            .tag { padding: 4px 10px; font-size: 0.7rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.001ms !important;
+                transition-duration: 0.001ms !important;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <div class="container" id="splash">
-    <h1 class="brand-title">DASH <span>SOKOON</span></h1>
-    <p class="subtitle">نظام إدارة الحجوزات الذكي</p>
-    
-    <div class="loader-container">
-      <div class="loader-fill"></div>
+    <div class="container">
+
+        <!-- الهيدر -->
+        <header class="app-header">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <h2>شفاء · فيديوهات الشرح</h2>
+            </div>
+            <span class="header-subtitle">شرح واجهات التطبيق</span>
+        </header>
+
+        <!-- التبويبات -->
+        <div class="tabs-container">
+            <button class="tab-btn active" data-tab="nurse">
+                <i class="fas fa-user-nurse"></i>
+                الممرض
+            </button>
+            <button class="tab-btn" data-tab="doctor">
+                <i class="fas fa-user-md"></i>
+                الدكتور
+            </button>
+            <button class="tab-btn" data-tab="pharmacist">
+                <i class="fas fa-prescription"></i>
+                الصيدلي
+            </button>
+        </div>
+
+        <!-- فيديو الممرض -->
+        <div class="video-container active" id="tab-nurse">
+            <div class="video-card">
+                <div class="video-wrapper" id="wrapper-nurse">
+                    <iframe 
+                        id="video-nurse"
+                        src="https://www.youtube.com/embed/xvBWpvl_cEA" 
+                        title="شرح واجهة الممرض"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="video-info">
+                    <h3>
+                        <i class="fas fa-user-nurse"></i>
+                        شرح واجهة الممرض
+                    </h3>
+                    <p>
+                        في هذا الفيديو هتتعلم إزاي تستخدم لوحة الممرض في تطبيق شفاء. هتشوف إزاي تدير الكشوفات وتضيف حجوزات جديدة وتربطها بالدكاترة.
+                    </p>
+                    <div class="tags">
+                        <span class="tag">كشوفات</span>
+                        <span class="tag">حجز مرضى</span>
+                        <span class="tag">ربط بالدكاترة</span>
+                        <span class="tag">وضع القرية</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- فيديو الدكتور -->
+        <div class="video-container" id="tab-doctor">
+            <div class="video-card">
+                <div class="video-wrapper" id="wrapper-doctor">
+                    <iframe 
+                        id="video-doctor"
+                        src="https://www.youtube.com/embed/J9NA2w5z8po" 
+                        title="شرح واجهة الدكتور"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="video-info">
+                    <h3>
+                        <i class="fas fa-user-md"></i>
+                        شرح واجهة الدكتور
+                    </h3>
+                    <p>
+                        الفيديو ده بيشرح واجهة الدكتور في تطبيق شفاء. إزاي يكتب التشخيص ويضيف الروشتة بالأدوية والجرعات المختلفة.
+                    </p>
+                    <div class="tags">
+                        <span class="tag">تشخيص</span>
+                        <span class="tag">روشتة</span>
+                        <span class="tag">أدوية</span>
+                        <span class="tag">جرعات</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- فيديو الصيدلي -->
+        <div class="video-container" id="tab-pharmacist">
+            <div class="video-card">
+                <div class="video-wrapper" id="wrapper-pharmacist">
+                    <iframe 
+                        id="video-pharmacist"
+                        src="https://www.youtube.com/embed/6BEh9gZoayg" 
+                        title="شرح واجهة الصيدلي"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="video-info">
+                    <h3>
+                        <i class="fas fa-prescription"></i>
+                        شرح واجهة الصيدلي
+                    </h3>
+                    <p>
+                        الفيديو ده بيوضح إزاي الصيدلي بيستخدم تطبيق شفاء. إزاي يشوف الوصفات الجديدة ويصرفها ويكتب ملاحظاته.
+                    </p>
+                    <div class="tags">
+                        <span class="tag">صرف روشتات</span>
+                        <span class="tag">ملاحظات</span>
+                        <span class="tag">حالة الصرف</span>
+                        <span class="tag">سجل المريض</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
-    <p class="status-text" id="statusMessage">⚡ جاري تجهيز لوحة التحكم...</p>
-  </div>
 
-  <script>
-    const messages = [
-      "⚡ جاري تجهيز لوحة التحكم...",
-      "📚 تحميل بيانات الكتب...",
-      "🔐 تأمين الاتصال...",
-      "✨ تجهيز الواجهة..."
-    ];
-    let msgIndex = 0;
-    const statusEl = document.getElementById('statusMessage');
-    
-    const msgInterval = setInterval(() => {
-      msgIndex = (msgIndex + 1) % messages.length;
-      statusEl.textContent = messages[msgIndex];
-    }, 800);
+    <script>
+        // ============ تبديل التبويبات مع إيقاف الفيديو ============
+        const tabs = document.querySelectorAll('.tab-btn');
+        const videos = document.querySelectorAll('.video-container');
+        
+        // معرفات الفيديوهات والأغلفة
+        const videoData = {
+            'nurse': {
+                iframe: document.getElementById('video-nurse'),
+                wrapper: document.getElementById('wrapper-nurse'),
+                src: 'https://www.youtube.com/embed/xvBWpvl_cEA'
+            },
+            'doctor': {
+                iframe: document.getElementById('video-doctor'),
+                wrapper: document.getElementById('wrapper-doctor'),
+                src: 'https://www.youtube.com/embed/J9NA2w5z8po'
+            },
+            'pharmacist': {
+                iframe: document.getElementById('video-pharmacist'),
+                wrapper: document.getElementById('wrapper-pharmacist'),
+                src: 'https://www.youtube.com/embed/6BEh9gZoayg'
+            }
+        };
 
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        clearInterval(msgInterval);
-        statusEl.textContent = "✅ جاهز!";
-        
-        const splash = document.getElementById('splash');
-        splash.classList.add('exit-animation');
-        
-        setTimeout(() => {
-          window.location.href = 'login.html';
-        }, 600);
-      }, 3000); 
-    });
-  </script>
+        // ✅ دالة إيقاف الفيديو وإعادة بنائه (الأكثر توافقاً)
+        function stopVideo(tabName) {
+            const data = videoData[tabName];
+            if (!data || !data.wrapper || !data.iframe) return;
+            
+            // إعادة بناء iframe بالكامل لضمان إيقافه
+            const newIframe = document.createElement('iframe');
+            newIframe.id = data.iframe.id;
+            newIframe.src = data.src;
+            newIframe.title = data.iframe.title;
+            newIframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen";
+            newIframe.setAttribute('allowfullscreen', '');
+            newIframe.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: var(--radius-lg) var(--radius-lg) 0 0;';
+            
+            // استبدال iframe القديم بالجديد
+            data.wrapper.innerHTML = '';
+            data.wrapper.appendChild(newIframe);
+            
+            // تحديث المرجع في الكائن
+            videoData[tabName].iframe = newIframe;
+        }
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // ✅ إيقاف الفيديو النشط حالياً
+                const currentActiveTab = document.querySelector('.tab-btn.active');
+                if (currentActiveTab && currentActiveTab !== tab) {
+                    const currentTabName = currentActiveTab.dataset.tab;
+                    stopVideo(currentTabName);
+                }
+
+                // إزالة active من الكل
+                tabs.forEach(t => t.classList.remove('active'));
+                videos.forEach(v => v.classList.remove('active'));
+
+                // تفعيل التبويب المختار
+                tab.classList.add('active');
+                const targetId = 'tab-' + tab.dataset.tab;
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+    </script>
 
 </body>
-</html>
+  </html>
