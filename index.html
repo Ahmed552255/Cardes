@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#00AEEF">
     <title>شفاء · فيديوهات الشرح</title>
     
-    <!-- PWA Manifest للتثبيت التلقائي -->
+    <!-- PWA Manifest -->
     <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22%D8%B4%D9%81%D8%A7%D8%A1%22%2C%22short_name%22%3A%22%D8%B4%D9%81%D8%A7%D8%A1%22%2C%22start_url%22%3A%22https%3A%2F%2Fpharmacy-one-mauve.vercel.app%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23FFFFFF%22%2C%22theme_color%22%3A%22%2300AEEF%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%253Ccircle%20cx%3D'50'%20cy%3D'50'%20r%3D'50'%20fill%3D'%2300AEEF'%2F%3E%253Ctext%20x%3D'50'%20y%3D'65'%20text-anchor%3D'middle'%20fill%3D'white'%20font-size%3D'50'%20font-family%3D'Arial'%3E%D8%B4%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22100x100%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -231,39 +231,189 @@
             font-size: 0.7rem;
         }
 
-        /* ============ إشعار ============ */
-        .toast {
+        /* ============ مودال التعليمات ============ */
+        .modal-overlay {
+            display: none;
             position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #1A3C4A;
-            color: white;
-            padding: 16px 24px;
-            border-radius: var(--radius-xl);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 32px 28px;
+            max-width: 480px;
+            width: 100%;
             box-shadow: var(--shadow-lg);
-            z-index: 2000;
-            opacity: 0;
-            transition: all 0.3s ease;
-            font-family: 'Cairo', sans-serif;
-            font-weight: 600;
-            font-size: 0.9rem;
+            animation: modalSlideIn 0.3s ease;
+            position: relative;
             text-align: center;
-            max-width: 90vw;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: #F5F5F5;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
             display: flex;
             align-items: center;
+            justify-content: center;
+            color: var(--text-sec);
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: #E0E0E0;
+            color: var(--ink);
+            transform: rotate(90deg);
+        }
+
+        .shortcut-icon-preview {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #008080, #00AEEF);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 900;
+            box-shadow: 0 8px 24px rgba(0, 174, 239, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .modal-content h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--ink);
+        }
+
+        .modal-content .filename {
+            background: #F0F7FA;
+            color: var(--primary-dark);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 20px;
+            border: 1px solid var(--primary-light);
+        }
+
+        .drag-instruction {
+            background: #FFF9E6;
+            border: 2px dashed #FFA726;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .drag-instruction i {
+            font-size: 2.5rem;
+            color: #FFA726;
+            margin-bottom: 12px;
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .drag-instruction p {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #E65100;
+            margin-bottom: 6px;
+        }
+
+        .drag-instruction .sub-text {
+            font-size: 0.82rem;
+            color: #BF360C;
+            font-weight: 500;
+        }
+
+        .open-folder-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             gap: 10px;
-            border: 2px solid var(--primary);
+            width: 100%;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #008080, #00AEEF);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
         }
 
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
+        .open-folder-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 174, 239, 0.35);
         }
 
-        .toast i {
-            font-size: 1.3rem;
-            color: var(--primary);
+        .close-modal-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            color: var(--text-sec);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .close-modal-btn:hover {
+            background: #F5F5F5;
+            color: var(--ink);
         }
 
         /* ============ التبويبات ============ */
@@ -442,6 +592,10 @@
             
             .video-info { padding: 14px 16px; }
             .video-info h3 { font-size: 1rem; }
+
+            .modal-content {
+                padding: 24px 18px;
+            }
         }
 
         @media (max-width: 400px) {
@@ -506,10 +660,10 @@
                 <!-- زر اختصار سطح المكتب -->
                 <button class="download-btn desktop" 
                         id="desktopShortcutBtn"
-                        aria-label="تحميل اختصار سطح المكتب">
+                        aria-label="إنشاء اختصار على سطح المكتب">
                     <i class="fas fa-desktop"></i>
-                    تحميل اختصار للموقع
-                    <i class="fas fa-download"></i>
+                    اختصار سطح المكتب
+                    <i class="fas fa-plus-square"></i>
                 </button>
             </div>
             <div class="download-info">
@@ -518,10 +672,39 @@
             </div>
         </div>
 
-        <!-- إشعار -->
-        <div class="toast" id="successToast">
-            <i class="fas fa-info-circle"></i>
-            <span id="toastMessage"></span>
+        <!-- مودال التعليمات -->
+        <div class="modal-overlay" id="instructionModal">
+            <div class="modal-content">
+                <button class="modal-close" id="closeModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <!-- أيقونة شفاء -->
+                <div class="shortcut-icon-preview">
+                    ش
+                </div>
+                
+                <h2>تم تحميل الاختصار!</h2>
+                <div class="filename">
+                    <i class="fas fa-link"></i>
+                    شفاء.url
+                </div>
+                
+                <div class="drag-instruction">
+                    <i class="fas fa-hand-pointer"></i>
+                    <p>اسحب الملف لسطح المكتب</p>
+                    <p class="sub-text">من مجلد التحميلات ← إلى سطح المكتب</p>
+                </div>
+                
+                <button class="open-folder-btn" id="openFolderBtn">
+                    <i class="fas fa-folder-open"></i>
+                    فتح مجلد التحميلات
+                </button>
+                
+                <button class="close-modal-btn" id="closeModalBtn2">
+                    فهمت، شكراً
+                </button>
+            </div>
         </div>
 
         <!-- التبويبات -->
@@ -633,78 +816,130 @@
     </div>
 
     <script>
+        // ============ إنشاء اختصار سطح المكتب ============
         const desktopBtn = document.getElementById('desktopShortcutBtn');
-        const toast = document.getElementById('successToast');
-        const toastMessage = document.getElementById('toastMessage');
+        const modal = document.getElementById('instructionModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const closeModalBtn2 = document.getElementById('closeModalBtn2');
+        const openFolderBtn = document.getElementById('openFolderBtn');
 
-        function showToast(message) {
-            toastMessage.textContent = message;
-            toast.classList.add('show');
+        const websiteUrl = 'https://pharmacy-one-mauve.vercel.app/';
+        const shortcutFileName = 'شفاء.url';
+
+        // أيقونة مخصصة لشفاء (SVG محول لـ Base64 ICO)
+        const shifaIcon = 'https://pharmacy-one-mauve.vercel.app/favicon.ico';
+
+        function createAndDownloadShortcut() {
+            // إنشاء محتوى ملف .url مع أيقونة مخصصة
+            const urlContent = `[InternetShortcut]\r\nURL=${websiteUrl}\r\nIconFile=${shifaIcon}\r\nIconIndex=0\r\n`;
             
-            clearTimeout(toast.hideTimeout);
-            toast.hideTimeout = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 5000);
+            // إنشاء Blob وتحويله لملف
+            const blob = new Blob([urlContent], { type: 'application/x-url' });
+            const downloadUrl = URL.createObjectURL(blob);
+            
+            // إنشاء رابط تحميل مخفي
+            const downloadLink = document.createElement('a');
+            downloadLink.href = downloadUrl;
+            downloadLink.download = shortcutFileName;
+            
+            // إضافة للصفحة وتشغيل التحميل
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            
+            // تنظيف
+            setTimeout(() => {
+                document.body.removeChild(downloadLink);
+                URL.revokeObjectURL(downloadUrl);
+            }, 200);
         }
 
-        // ============ محاولة أولى: PWA Install (أفضل طريقة للمتصفحات الحديثة) ============
+        function openDownloadsFolder() {
+            // محاولة فتح مجلد التحميلات باستخدام PowerShell
+            const psCommand = `
+$shell = New-Object -ComObject Shell.Application
+$downloadsPath = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path
+Start-Process explorer.exe -ArgumentList $downloadsPath
+`;
+            
+            const psBlob = new Blob([psCommand], { type: 'text/plain;charset=utf-8' });
+            const psUrl = URL.createObjectURL(psBlob);
+            
+            const psLink = document.createElement('a');
+            psLink.href = psUrl;
+            psLink.download = 'OpenDownloads.ps1';
+            document.body.appendChild(psLink);
+            psLink.click();
+            document.body.removeChild(psLink);
+            URL.revokeObjectURL(psUrl);
+            
+            // تنبيه للمستخدم
+            setTimeout(() => {
+                alert('تم فتح مجلد التحميلات!\n\nابحث عن ملف: شفاء.url\nاسحبه إلى سطح المكتب ✅');
+            }, 500);
+        }
+
+        // ============ الأحداث ============
+
+        // الضغط على زر اختصار سطح المكتب
+        desktopBtn.addEventListener('click', () => {
+            // 1. تحميل ملف الاختصار
+            createAndDownloadShortcut();
+            
+            // 2. إظهار المودال بعد تحميل الملف
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 300);
+        });
+
+        // فتح مجلد التحميلات
+        openFolderBtn.addEventListener('click', () => {
+            openDownloadsFolder();
+        });
+
+        // إغلاق المودال
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        closeModalBtn.addEventListener('click', closeModal);
+        closeModalBtn2.addEventListener('click', closeModal);
+
+        // إغلاق المودال عند النقر خارج المحتوى
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // إغلاق المودال بمفتاح ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+
+        // ============ PWA للتثبيت التلقائي ============
         let deferredPrompt;
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-        });
-
-        async function tryPWAInstall() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    showToast('✅ تم إنشاء الاختصار على سطح المكتب بنجاح!');
+            
+            // دبل كليك للتثبيت التلقائي
+            desktopBtn.addEventListener('dblclick', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        alert('تم تثبيت تطبيق شفاء بنجاح! 🎉');
+                        closeModal();
+                    }
+                    deferredPrompt = null;
                 }
-                deferredPrompt = null;
-                return true;
-            }
-            return false;
-        }
-
-        // ============ محاولة ثانية: تنزيل ملف url مع تعليمات ============
-        function downloadURLFile() {
-            const websiteUrl = 'https://pharmacy-one-mauve.vercel.app/';
-            const shortcutName = 'شفاء - نظام الصيدلية';
-            
-            const urlContent = `[InternetShortcut]\r\nURL=${websiteUrl}\r\nIconFile=https://pharmacy-one-mauve.vercel.app/favicon.ico\r\nIconIndex=0`;
-            
-            const blob = new Blob([urlContent], { type: 'application/x-url' });
-            const url = URL.createObjectURL(blob);
-            
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `${shortcutName}.url`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-        }
-
-        // ============ الحدث الرئيسي ============
-        desktopBtn.addEventListener('click', async () => {
-            // نجرب PWA الأول
-            const installed = await tryPWAInstall();
-            
-            // لو منفعش، ننزل الملف
-            if (!installed) {
-                downloadURLFile();
-                showToast('📂 تم تحميل ملف الاختصار! اسحبه لسطح المكتب أو افتحه لإضافته');
-            }
+            });
         });
-        
-        // لو المتصفح بيدعم PWA، نغير شكل الزر
-        if (window.matchMedia('(display-mode: standalone)').matches || deferredPrompt) {
-            desktopBtn.innerHTML = '<i class="fas fa-desktop"></i> تثبيت على سطح المكتب <i class="fas fa-plus-square"></i>';
-        }
 
-        // ============ تبديل التبويبات ============
+        // ============ تبديل التبويبات مع إيقاف الفيديو ============
         const tabs = document.querySelectorAll('.tab-btn');
         const videos = document.querySelectorAll('.video-container');
         
@@ -740,6 +975,7 @@
             
             data.wrapper.innerHTML = '';
             data.wrapper.appendChild(newIframe);
+            
             videoData[tabName].iframe = newIframe;
         }
 
@@ -747,14 +983,16 @@
             tab.addEventListener('click', () => {
                 const currentActiveTab = document.querySelector('.tab-btn.active');
                 if (currentActiveTab && currentActiveTab !== tab) {
-                    stopVideo(currentActiveTab.dataset.tab);
+                    const currentTabName = currentActiveTab.dataset.tab;
+                    stopVideo(currentTabName);
                 }
 
                 tabs.forEach(t => t.classList.remove('active'));
                 videos.forEach(v => v.classList.remove('active'));
 
                 tab.classList.add('active');
-                document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+                const targetId = 'tab-' + tab.dataset.tab;
+                document.getElementById(targetId).classList.add('active');
             });
         });
     </script>
