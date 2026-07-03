@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#00AEEF">
     <title>شفاء · فيديوهات الشرح</title>
     
-    <!-- PWA Manifest -->
+    <!-- PWA Manifest للتثبيت التلقائي -->
     <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22%D8%B4%D9%81%D8%A7%D8%A1%22%2C%22short_name%22%3A%22%D8%B4%D9%81%D8%A7%D8%A1%22%2C%22start_url%22%3A%22https%3A%2F%2Fpharmacy-one-mauve.vercel.app%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23FFFFFF%22%2C%22theme_color%22%3A%22%2300AEEF%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%253Ccircle%20cx%3D'50'%20cy%3D'50'%20r%3D'50'%20fill%3D'%2300AEEF'%2F%3E%253Ctext%20x%3D'50'%20y%3D'65'%20text-anchor%3D'middle'%20fill%3D'white'%20font-size%3D'50'%20font-family%3D'Arial'%3E%D8%B4%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22100x100%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -237,20 +237,23 @@
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background: white;
-            color: var(--ink);
+            background: #1A3C4A;
+            color: white;
             padding: 16px 24px;
             border-radius: var(--radius-xl);
             box-shadow: var(--shadow-lg);
             z-index: 2000;
             opacity: 0;
             transition: all 0.3s ease;
-            border: 1px solid var(--border);
             font-family: 'Cairo', sans-serif;
             font-weight: 600;
             font-size: 0.9rem;
             text-align: center;
             max-width: 90vw;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 2px solid var(--primary);
         }
 
         .toast.show {
@@ -258,16 +261,9 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        .toast.success {
-            border-right: 4px solid var(--success);
-        }
-
         .toast i {
-            font-size: 1.2rem;
-        }
-
-        .toast.success i {
-            color: var(--success);
+            font-size: 1.3rem;
+            color: var(--primary);
         }
 
         /* ============ التبويبات ============ */
@@ -510,10 +506,10 @@
                 <!-- زر اختصار سطح المكتب -->
                 <button class="download-btn desktop" 
                         id="desktopShortcutBtn"
-                        aria-label="إنشاء اختصار على سطح المكتب">
+                        aria-label="تحميل اختصار سطح المكتب">
                     <i class="fas fa-desktop"></i>
-                    اختصار سطح المكتب
-                    <i class="fas fa-plus-square"></i>
+                    تحميل اختصار للموقع
+                    <i class="fas fa-download"></i>
                 </button>
             </div>
             <div class="download-info">
@@ -524,7 +520,7 @@
 
         <!-- إشعار -->
         <div class="toast" id="successToast">
-            <i class="fas fa-check-circle"></i>
+            <i class="fas fa-info-circle"></i>
             <span id="toastMessage"></span>
         </div>
 
@@ -637,136 +633,78 @@
     </div>
 
     <script>
-        // ============ إنشاء اختصار سطح المكتب (طريقتين) ============
         const desktopBtn = document.getElementById('desktopShortcutBtn');
         const toast = document.getElementById('successToast');
         const toastMessage = document.getElementById('toastMessage');
 
-        function showToast(message, type = 'success') {
+        function showToast(message) {
             toastMessage.textContent = message;
-            toast.className = 'toast show ' + type;
+            toast.classList.add('show');
             
             clearTimeout(toast.hideTimeout);
             toast.hideTimeout = setTimeout(() => {
                 toast.classList.remove('show');
-            }, 6000);
+            }, 5000);
         }
 
-        function createDesktopShortcut() {
-            const websiteUrl = 'https://pharmacy-one-mauve.vercel.app/';
-            const shortcutName = 'شفاء - نظام الصيدلية';
-            
-            // ========== الطريقة الأولى: PowerShell (للأجهزة اللي فيها PowerShell) ==========
-            const psScript = `
-$url = '${websiteUrl}'
-$shortcutName = '${shortcutName}'
-$desktopPath = [Environment]::GetFolderPath("Desktop")
-$shortcutPath = Join-Path $desktopPath "$shortcutName.url"
-
-$urlContent = @"
-[InternetShortcut]
-URL=$url
-IconFile=https://pharmacy-one-mauve.vercel.app/favicon.ico
-IconIndex=0
-"@
-
-[System.IO.File]::WriteAllText($shortcutPath, $urlContent, [System.Text.Encoding]::Unicode)
-
-# تأكيد
-if (Test-Path $shortcutPath) {
-    Write-Output "SUCCESS:$shortcutPath"
-} else {
-    Write-Output "FAILED"
-}
-`;
-
-            // إنشاء ملف PowerShell
-            const psBlob = new Blob([psScript], { type: 'text/plain;charset=utf-8' });
-            const psUrl = URL.createObjectURL(psBlob);
-            
-            const psLink = document.createElement('a');
-            psLink.href = psUrl;
-            psLink.download = 'CreateShortcut.ps1';
-            document.body.appendChild(psLink);
-            psLink.click();
-            document.body.removeChild(psLink);
-            URL.revokeObjectURL(psUrl);
-
-            // ========== الطريقة الثانية: Batch File (بديل لو PowerShell مش شغال) ==========
-            const batchScript = `@echo off
-set "url=${websiteUrl}"
-set "shortcutName=${shortcutName}"
-set "desktop=%USERPROFILE%\\Desktop"
-set "shortcutPath=%desktop%\\%shortcutName%.url"
-
-(
-echo [InternetShortcut]
-echo URL=%url%
-echo IconFile=https://pharmacy-one-mauve.vercel.app/favicon.ico
-echo IconIndex=0
-) > "%shortcutPath%"
-
-if exist "%shortcutPath%" (
-    echo SUCCESS
-) else (
-    echo FAILED
-)
-`;
-
-            const batchBlob = new Blob([batchScript], { type: 'text/plain;charset=utf-8' });
-            const batchUrl = URL.createObjectURL(batchBlob);
-            
-            const batchLink = document.createElement('a');
-            batchLink.href = batchUrl;
-            batchLink.download = 'CreateShortcut.bat';
-            document.body.appendChild(batchLink);
-            batchLink.click();
-            document.body.removeChild(batchLink);
-            URL.revokeObjectURL(batchUrl);
-
-            // ========== الطريقة الثالثة: ملف .url مباشر (احتياطي) ==========
-            const urlContent = `[InternetShortcut]\nURL=${websiteUrl}\nIconFile=https://pharmacy-one-mauve.vercel.app/favicon.ico\nIconIndex=0`;
-            const urlBlob = new Blob([urlContent], { type: 'application/x-url' });
-            const urlDownloadUrl = URL.createObjectURL(urlBlob);
-            
-            const urlLink = document.createElement('a');
-            urlLink.href = urlDownloadUrl;
-            urlLink.download = `${shortcutName}.url`;
-            document.body.appendChild(urlLink);
-            urlLink.click();
-            document.body.removeChild(urlLink);
-            URL.revokeObjectURL(urlDownloadUrl);
-
-            // إظهار رسالة توضيحية
-            showToast('تم تحميل 3 ملفات. شغّل ملف CreateShortcut.ps1 أو CreateShortcut.bat لإنشاء الاختصار تلقائياً على سطح المكتب ✅');
-        }
-
-        // معالجة النقر على الزر
-        desktopBtn.addEventListener('click', () => {
-            createDesktopShortcut();
-        });
-
-        // ============ PWA للتثبيت التلقائي ============
+        // ============ محاولة أولى: PWA Install (أفضل طريقة للمتصفحات الحديثة) ============
         let deferredPrompt;
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            
-            // دبل كليك للتثبيت التلقائي
-            desktopBtn.addEventListener('dblclick', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        showToast('تم تثبيت التطبيق بنجاح! 🎉');
-                    }
-                    deferredPrompt = null;
-                }
-            });
         });
 
-        // ============ تبديل التبويبات مع إيقاف الفيديو ============
+        async function tryPWAInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    showToast('✅ تم إنشاء الاختصار على سطح المكتب بنجاح!');
+                }
+                deferredPrompt = null;
+                return true;
+            }
+            return false;
+        }
+
+        // ============ محاولة ثانية: تنزيل ملف url مع تعليمات ============
+        function downloadURLFile() {
+            const websiteUrl = 'https://pharmacy-one-mauve.vercel.app/';
+            const shortcutName = 'شفاء - نظام الصيدلية';
+            
+            const urlContent = `[InternetShortcut]\r\nURL=${websiteUrl}\r\nIconFile=https://pharmacy-one-mauve.vercel.app/favicon.ico\r\nIconIndex=0`;
+            
+            const blob = new Blob([urlContent], { type: 'application/x-url' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${shortcutName}.url`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // ============ الحدث الرئيسي ============
+        desktopBtn.addEventListener('click', async () => {
+            // نجرب PWA الأول
+            const installed = await tryPWAInstall();
+            
+            // لو منفعش، ننزل الملف
+            if (!installed) {
+                downloadURLFile();
+                showToast('📂 تم تحميل ملف الاختصار! اسحبه لسطح المكتب أو افتحه لإضافته');
+            }
+        });
+        
+        // لو المتصفح بيدعم PWA، نغير شكل الزر
+        if (window.matchMedia('(display-mode: standalone)').matches || deferredPrompt) {
+            desktopBtn.innerHTML = '<i class="fas fa-desktop"></i> تثبيت على سطح المكتب <i class="fas fa-plus-square"></i>';
+        }
+
+        // ============ تبديل التبويبات ============
         const tabs = document.querySelectorAll('.tab-btn');
         const videos = document.querySelectorAll('.video-container');
         
@@ -802,7 +740,6 @@ if exist "%shortcutPath%" (
             
             data.wrapper.innerHTML = '';
             data.wrapper.appendChild(newIframe);
-            
             videoData[tabName].iframe = newIframe;
         }
 
@@ -810,16 +747,14 @@ if exist "%shortcutPath%" (
             tab.addEventListener('click', () => {
                 const currentActiveTab = document.querySelector('.tab-btn.active');
                 if (currentActiveTab && currentActiveTab !== tab) {
-                    const currentTabName = currentActiveTab.dataset.tab;
-                    stopVideo(currentTabName);
+                    stopVideo(currentActiveTab.dataset.tab);
                 }
 
                 tabs.forEach(t => t.classList.remove('active'));
                 videos.forEach(v => v.classList.remove('active'));
 
                 tab.classList.add('active');
-                const targetId = 'tab-' + tab.dataset.tab;
-                document.getElementById(targetId).classList.add('active');
+                document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
             });
         });
     </script>
