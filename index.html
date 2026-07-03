@@ -231,7 +231,7 @@
             font-size: 0.7rem;
         }
 
-        /* ============ إشعار النجاح ============ */
+        /* ============ إشعار ============ */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -242,9 +242,6 @@
             padding: 16px 24px;
             border-radius: var(--radius-xl);
             box-shadow: var(--shadow-lg);
-            display: flex;
-            align-items: center;
-            gap: 12px;
             z-index: 2000;
             opacity: 0;
             transition: all 0.3s ease;
@@ -252,6 +249,8 @@
             font-family: 'Cairo', sans-serif;
             font-weight: 600;
             font-size: 0.9rem;
+            text-align: center;
+            max-width: 90vw;
         }
 
         .toast.show {
@@ -259,14 +258,16 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        .toast.success i {
-            color: var(--success);
+        .toast.success {
+            border-right: 4px solid var(--success);
+        }
+
+        .toast i {
             font-size: 1.2rem;
         }
 
-        .toast.info i {
-            color: var(--primary);
-            font-size: 1.2rem;
+        .toast.success i {
+            color: var(--success);
         }
 
         /* ============ التبويبات ============ */
@@ -521,10 +522,10 @@
             </div>
         </div>
 
-        <!-- إشعار النجاح -->
+        <!-- إشعار -->
         <div class="toast" id="successToast">
             <i class="fas fa-check-circle"></i>
-            <span>تم تحميل ملف الاختصار! افتحه لإنشاء الاختصار على سطح المكتب</span>
+            <span id="toastMessage"></span>
         </div>
 
         <!-- التبويبات -->
@@ -636,44 +637,108 @@
     </div>
 
     <script>
-        // ============ إنشاء اختصار سطح المكتب ============
+        // ============ إنشاء اختصار سطح المكتب (طريقتين) ============
         const desktopBtn = document.getElementById('desktopShortcutBtn');
         const toast = document.getElementById('successToast');
+        const toastMessage = document.getElementById('toastMessage');
+
+        function showToast(message, type = 'success') {
+            toastMessage.textContent = message;
+            toast.className = 'toast show ' + type;
+            
+            clearTimeout(toast.hideTimeout);
+            toast.hideTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 6000);
+        }
 
         function createDesktopShortcut() {
             const websiteUrl = 'https://pharmacy-one-mauve.vercel.app/';
             const shortcutName = 'شفاء - نظام الصيدلية';
             
-            // إنشاء محتوى ملف .url (يعمل على Windows)
-            const urlContent = `[InternetShortcut]\nURL=${websiteUrl}\nIconFile=https://pharmacy-one-mauve.vercel.app/favicon.ico\nIconIndex=0`;
-            
-            // إنشاء Blob للملف
-            const blob = new Blob([urlContent], { type: 'application/x-url' });
-            
-            // إنشاء رابط تحميل
-            const downloadLink = document.createElement('a');
-            downloadLink.href = URL.createObjectURL(blob);
-            downloadLink.download = `${shortcutName}.url`;
-            
-            // تشغيل التحميل
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
-            
-            // تنظيف
-            URL.revokeObjectURL(downloadLink.href);
-            
-            // إظهار إشعار النجاح
-            showToast();
-        }
+            // ========== الطريقة الأولى: PowerShell (للأجهزة اللي فيها PowerShell) ==========
+            const psScript = `
+$url = '${websiteUrl}'
+$shortcutName = '${shortcutName}'
+$desktopPath = [Environment]::GetFolderPath("Desktop")
+$shortcutPath = Join-Path $desktopPath "$shortcutName.url"
 
-        function showToast() {
-            toast.classList.add('show', 'success');
+$urlContent = @"
+[InternetShortcut]
+URL=$url
+IconFile=https://pharmacy-one-mauve.vercel.app/favicon.ico
+IconIndex=0
+"@
+
+[System.IO.File]::WriteAllText($shortcutPath, $urlContent, [System.Text.Encoding]::Unicode)
+
+# تأكيد
+if (Test-Path $shortcutPath) {
+    Write-Output "SUCCESS:$shortcutPath"
+} else {
+    Write-Output "FAILED"
+}
+`;
+
+            // إنشاء ملف PowerShell
+            const psBlob = new Blob([psScript], { type: 'text/plain;charset=utf-8' });
+            const psUrl = URL.createObjectURL(psBlob);
             
-            // إخفاء الإشعار بعد 5 ثواني
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 5000);
+            const psLink = document.createElement('a');
+            psLink.href = psUrl;
+            psLink.download = 'CreateShortcut.ps1';
+            document.body.appendChild(psLink);
+            psLink.click();
+            document.body.removeChild(psLink);
+            URL.revokeObjectURL(psUrl);
+
+            // ========== الطريقة الثانية: Batch File (بديل لو PowerShell مش شغال) ==========
+            const batchScript = `@echo off
+set "url=${websiteUrl}"
+set "shortcutName=${shortcutName}"
+set "desktop=%USERPROFILE%\\Desktop"
+set "shortcutPath=%desktop%\\%shortcutName%.url"
+
+(
+echo [InternetShortcut]
+echo URL=%url%
+echo IconFile=https://pharmacy-one-mauve.vercel.app/favicon.ico
+echo IconIndex=0
+) > "%shortcutPath%"
+
+if exist "%shortcutPath%" (
+    echo SUCCESS
+) else (
+    echo FAILED
+)
+`;
+
+            const batchBlob = new Blob([batchScript], { type: 'text/plain;charset=utf-8' });
+            const batchUrl = URL.createObjectURL(batchBlob);
+            
+            const batchLink = document.createElement('a');
+            batchLink.href = batchUrl;
+            batchLink.download = 'CreateShortcut.bat';
+            document.body.appendChild(batchLink);
+            batchLink.click();
+            document.body.removeChild(batchLink);
+            URL.revokeObjectURL(batchUrl);
+
+            // ========== الطريقة الثالثة: ملف .url مباشر (احتياطي) ==========
+            const urlContent = `[InternetShortcut]\nURL=${websiteUrl}\nIconFile=https://pharmacy-one-mauve.vercel.app/favicon.ico\nIconIndex=0`;
+            const urlBlob = new Blob([urlContent], { type: 'application/x-url' });
+            const urlDownloadUrl = URL.createObjectURL(urlBlob);
+            
+            const urlLink = document.createElement('a');
+            urlLink.href = urlDownloadUrl;
+            urlLink.download = `${shortcutName}.url`;
+            document.body.appendChild(urlLink);
+            urlLink.click();
+            document.body.removeChild(urlLink);
+            URL.revokeObjectURL(urlDownloadUrl);
+
+            // إظهار رسالة توضيحية
+            showToast('تم تحميل 3 ملفات. شغّل ملف CreateShortcut.ps1 أو CreateShortcut.bat لإنشاء الاختصار تلقائياً على سطح المكتب ✅');
         }
 
         // معالجة النقر على الزر
@@ -681,21 +746,20 @@
             createDesktopShortcut();
         });
 
-        // ============ PWA للتثبيت التلقائي (دعم إضافي) ============
+        // ============ PWA للتثبيت التلقائي ============
         let deferredPrompt;
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             
-            // لو المتصفح بيدعم التثبيت التلقائي، نضيف النقر المزدوج
+            // دبل كليك للتثبيت التلقائي
             desktopBtn.addEventListener('dblclick', async () => {
                 if (deferredPrompt) {
                     deferredPrompt.prompt();
                     const { outcome } = await deferredPrompt.userChoice;
                     if (outcome === 'accepted') {
-                        toast.querySelector('span').textContent = 'تم تثبيت التطبيق بنجاح!';
-                        showToast();
+                        showToast('تم تثبيت التطبيق بنجاح! 🎉');
                     }
                     deferredPrompt = null;
                 }
