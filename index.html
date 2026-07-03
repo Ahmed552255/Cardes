@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#00AEEF">
     <title>شفاء · فيديوهات الشرح</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22%D8%B4%D9%81%D8%A7%D8%A1%22%2C%22short_name%22%3A%22%D8%B4%D9%81%D8%A7%D8%A1%22%2C%22start_url%22%3A%22https%3A%2F%2Fpharmacy-one-mauve.vercel.app%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23FFFFFF%22%2C%22theme_color%22%3A%22%2300AEEF%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%253Ccircle%20cx%3D'50'%20cy%3D'50'%20r%3D'50'%20fill%3D'%2300AEEF'%2F%3E%253Ctext%20x%3D'50'%20y%3D'65'%20text-anchor%3D'middle'%20fill%3D'white'%20font-size%3D'50'%20font-family%3D'Arial'%3E%D8%B4%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22100x100%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap&subset=arabic" rel="stylesheet">
@@ -106,32 +110,47 @@
             font-weight: 600;
         }
 
-        /* ============ زر التحميل ============ */
+        /* ============ أزرار التحميل ============ */
         .download-section {
             margin-bottom: 20px;
+        }
+
+        .download-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 8px;
         }
 
         .download-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 10px;
             width: 100%;
-            padding: 16px 24px;
-            background: linear-gradient(135deg, #008080, #00AEEF);
+            padding: 16px 20px;
             color: white;
             border: none;
             border-radius: var(--radius-md);
             font-family: 'Cairo', sans-serif;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 24px rgba(0, 174, 239, 0.25);
             text-decoration: none;
             touch-action: manipulation;
             position: relative;
             overflow: hidden;
+        }
+
+        .download-btn.android {
+            background: linear-gradient(135deg, #008080, #00AEEF);
+            box-shadow: 0 8px 24px rgba(0, 174, 239, 0.25);
+        }
+
+        .download-btn.desktop {
+            background: linear-gradient(135deg, #2C3E50, #3498DB);
+            box-shadow: 0 8px 24px rgba(52, 152, 219, 0.25);
         }
 
         .download-btn::before {
@@ -151,45 +170,239 @@
 
         .download-btn:hover {
             transform: translateY(-2px);
+        }
+
+        .download-btn.android:hover {
             box-shadow: 0 12px 32px rgba(0, 174, 239, 0.35);
+        }
+
+        .download-btn.desktop:hover {
+            box-shadow: 0 12px 32px rgba(52, 152, 219, 0.35);
         }
 
         .download-btn:active {
             transform: translateY(0) scale(0.98);
+        }
+
+        .download-btn.android:active {
             box-shadow: 0 4px 12px rgba(0, 174, 239, 0.3);
         }
 
+        .download-btn.desktop:active {
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
         .download-btn i {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
+        }
+
+        .download-btn.android i.fa-android {
             animation: bounceIn 2s infinite;
         }
 
+        .download-btn.desktop i.fa-desktop {
+            animation: pulse 2s infinite;
+        }
+
         @keyframes bounceIn {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-8px);
-            }
-            60% {
-                transform: translateY(-4px);
-            }
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
+            60% { transform: translateY(-4px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
         }
 
         .download-info {
             text-align: center;
-            margin-top: 8px;
             font-size: 0.8rem;
             color: var(--text-sec);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
+            flex-wrap: wrap;
         }
 
         .download-info i {
             color: var(--success);
             font-size: 0.7rem;
+        }
+
+        /* ============ مودال الشرح ============ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: var(--shadow-lg);
+            animation: modalSlideIn 0.3s ease;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: #F5F5F5;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-sec);
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: #E0E0E0;
+            color: var(--ink);
+            transform: rotate(90deg);
+        }
+
+        .modal-content h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-content h3 i {
+            color: var(--primary);
+        }
+
+        .browser-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .browser-step {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            padding: 14px;
+            background: #F8FAFB;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .browser-step:hover {
+            background: #F0F7FA;
+            border-color: var(--primary-light);
+        }
+
+        .step-icon {
+            background: linear-gradient(135deg, #008080, #00AEEF);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-content h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--ink);
+        }
+
+        .step-content p {
+            font-size: 0.82rem;
+            color: var(--text-sec);
+            line-height: 1.6;
+        }
+
+        .step-content .shortcut-key {
+            display: inline-block;
+            background: #E8F0FE;
+            color: #1A73E8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            margin: 0 2px;
+            border: 1px solid #D2E3FC;
+        }
+
+        .modal-install-btn {
+            display: none;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #008080, #00AEEF);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 12px;
+        }
+
+        .modal-install-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 174, 239, 0.3);
+        }
+
+        .modal-install-btn.show {
+            display: block;
         }
 
         /* ============ التبويبات ============ */
@@ -338,9 +551,14 @@
             
             .logo h2 { font-size: 1.2rem; }
             
+            .download-buttons {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
             .download-btn {
                 padding: 14px 20px;
-                font-size: 1rem;
+                font-size: 0.9rem;
                 border-radius: var(--radius-sm);
             }
             
@@ -363,6 +581,15 @@
             
             .video-info { padding: 14px 16px; }
             .video-info h3 { font-size: 1rem; }
+
+            .modal-content {
+                padding: 20px 16px;
+                border-radius: var(--radius-md);
+            }
+
+            .browser-step {
+                padding: 12px;
+            }
         }
 
         @media (max-width: 400px) {
@@ -374,7 +601,7 @@
             
             .download-btn {
                 padding: 12px 16px;
-                font-size: 0.9rem;
+                font-size: 0.85rem;
                 border-radius: var(--radius-xs);
             }
             
@@ -410,20 +637,97 @@
             <span class="header-subtitle">شرح واجهات التطبيق</span>
         </header>
 
-        <!-- زر تحميل التطبيق -->
+        <!-- أزرار التحميل -->
         <div class="download-section">
-            <a href="https://www.mediafire.com/file/eg6d727dqyavma5/6a46db92ca79dc8bb4cc2547.apk/file" 
-               class="download-btn" 
-               target="_blank" 
-               rel="noopener noreferrer"
-               aria-label="تحميل تطبيق شفاء للأندرويد">
-                <i class="fab fa-android"></i>
-                تحميل تطبيق شفاء للأندرويد
-                <i class="fas fa-download"></i>
-            </a>
+            <div class="download-buttons">
+                <!-- زر تحميل الأندرويد -->
+                <a href="https://www.mediafire.com/file/eg6d727dqyavma5/6a46db92ca79dc8bb4cc2547.apk/file" 
+                   class="download-btn android" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   aria-label="تحميل تطبيق شفاء للأندرويد">
+                    <i class="fab fa-android"></i>
+                    تحميل للأندرويد
+                    <i class="fas fa-download"></i>
+                </a>
+
+                <!-- زر اختصار سطح المكتب -->
+                <button class="download-btn desktop" 
+                        id="desktopShortcutBtn"
+                        aria-label="إضافة اختصار لسطح المكتب">
+                    <i class="fas fa-desktop"></i>
+                    اختصار لسطح المكتب
+                    <i class="fas fa-plus-square"></i>
+                </button>
+            </div>
             <div class="download-info">
                 <i class="fas fa-shield-alt"></i>
-                <span>آخر تحديث · متوافق مع جميع إصدارات الأندرويد</span>
+                <span>آخر تحديث · متوافق مع جميع الأجهزة</span>
+            </div>
+        </div>
+
+        <!-- مودال شرح إضافة اختصار -->
+        <div class="modal-overlay" id="shortcutModal">
+            <div class="modal-content">
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <h3>
+                    <i class="fas fa-desktop"></i>
+                    إضافة اختصار لسطح المكتب
+                </h3>
+
+                <!-- زر التثبيت التلقائي (يظهر في المتصفحات المدعومة) -->
+                <button class="modal-install-btn" id="autoInstallBtn">
+                    <i class="fas fa-magic"></i>
+                    تثبيت تلقائي
+                </button>
+
+                <div class="browser-steps">
+                    <!-- Google Chrome -->
+                    <div class="browser-step">
+                        <div class="step-icon">1</div>
+                        <div class="step-content">
+                            <h4><i class="fab fa-chrome"></i> Google Chrome</h4>
+                            <p>
+                                اضغط على <span class="shortcut-key">⋮</span> القائمة ← 
+                                <strong>"المزيد من الأدوات"</strong> ← 
+                                <strong>"إنشاء اختصار..."</strong>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Microsoft Edge -->
+                    <div class="browser-step">
+                        <div class="step-icon">2</div>
+                        <div class="step-content">
+                            <h4><i class="fab fa-edge"></i> Microsoft Edge</h4>
+                            <p>
+                                اضغط على <span class="shortcut-key">⋯</span> الإعدادات ← 
+                                <strong>"التطبيقات"</strong> ← 
+                                <strong>"تثبيت هذا الموقع كتطبيق"</strong>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Firefox -->
+                    <div class="browser-step">
+                        <div class="step-icon">3</div>
+                        <div class="step-content">
+                            <h4><i class="fab fa-firefox-browser"></i> Firefox</h4>
+                            <p>
+                                اسحب أيقونة <span class="shortcut-key">🔒</span> القفل في شريط العنوان ← 
+                                أسقطها على سطح المكتب
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <p style="text-align: center; font-size: 0.8rem; color: var(--text-sec); margin-top: 8px;">
+                    <i class="fas fa-info-circle"></i>
+                    الرابط: <strong>https://pharmacy-one-mauve.vercel.app/</strong>
+                </p>
             </div>
         </div>
 
@@ -536,6 +840,77 @@
     </div>
 
     <script>
+        // ============ نظام PWA للتثبيت التلقائي ============
+        let deferredPrompt;
+        const autoInstallBtn = document.getElementById('autoInstallBtn');
+
+        // الاستماع لحدث beforeinstallprompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // منع ظهور النافذة التلقائية
+            e.preventDefault();
+            // حفظ الحدث لاستخدامه لاحقاً
+            deferredPrompt = e;
+            // إظهار زر التثبيت التلقائي
+            if (autoInstallBtn) {
+                autoInstallBtn.classList.add('show');
+            }
+        });
+
+        // معالجة النقر على زر التثبيت التلقائي
+        if (autoInstallBtn) {
+            autoInstallBtn.addEventListener('click', async () => {
+                if (!deferredPrompt) return;
+                
+                // إظهار نافذة التثبيت
+                deferredPrompt.prompt();
+                
+                // انتظار اختيار المستخدم
+                const { outcome } = await deferredPrompt.userChoice;
+                
+                console.log(`User response: ${outcome}`);
+                
+                // إلغاء الحدث
+                deferredPrompt = null;
+                
+                // إخفاء الزر بعد الاستخدام
+                autoInstallBtn.classList.remove('show');
+                
+                // إغلاق المودال إذا تم التثبيت بنجاح
+                if (outcome === 'accepted') {
+                    document.getElementById('shortcutModal').classList.remove('active');
+                }
+            });
+        }
+
+        // ============ مودال الشرح ============
+        const modal = document.getElementById('shortcutModal');
+        const desktopBtn = document.getElementById('desktopShortcutBtn');
+        const closeModalBtn = document.getElementById('closeModal');
+
+        // فتح المودال
+        desktopBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+
+        // إغلاق المودال
+        closeModalBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // إغلاق المودال عند النقر خارج المحتوى
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+
+        // إغلاق المودال بمفتاح ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                modal.classList.remove('active');
+            }
+        });
+
         // ============ تبديل التبويبات مع إيقاف الفيديو ============
         const tabs = document.querySelectorAll('.tab-btn');
         const videos = document.querySelectorAll('.video-container');
